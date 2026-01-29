@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "docker:dev:up": "docker compose -f compose.dev.yaml up -d"
+  }
+}

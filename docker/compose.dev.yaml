@@ -1,0 +1,16 @@
+name: db-dev
+
+networks:
+  development:
+    driver: bridge
+
+services:
+  sbs-dev:
+    container_name: sbs-dev
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3307:3306
+    networks:
+      - development

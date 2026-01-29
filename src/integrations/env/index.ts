@@ -4,6 +4,12 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string(),
+    PASSWORD_ENCODING_ROUND: z.string().transform((val) => {
+      const n = Number(val);
+      if (isNaN(n)) throw new Error("PASSWORD_ENCODING_ROUND must be a number");
+      return n;
+    }),
+    TOKEN_SECRET: z.string(),
   },
 
   /**
@@ -46,6 +52,7 @@ export const env = createEnv({
 function runtimeEnv() {
   return {
     ...(typeof process !== "undefined" ? process.env : {}),
+    // @ts-ignore: import.meta.env not available in CJS, safe to ignore
     ...(typeof import.meta !== "undefined" ? import.meta.env : {}),
   };
 }
