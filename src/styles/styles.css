@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@import "tw-animate-css";
+
+@import "./shadcn.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  :root {
+    --background: #ececec;
+    --foreground: #1a1a1a;
+  }
+  :root.dark {
+    --background: #1a1a1a;
+    --foreground: #ececec;
+  }
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+}

@@ -1,0 +1,11 @@
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+**/routeTree.gen.ts
+public/*
+.husky/*
+.gitignore
+.prettierignore
+.cursorrules
+.devcontainer
+src/ui/shadcn
