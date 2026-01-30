@@ -1,9 +1,11 @@
+import { getUser } from "@/db/querries/users";
 import { env } from "@/integrations/env";
 import jwt from "jsonwebtoken";
 
-export type Session = {
-  userid: string;
-};
+export type Session = Pick<
+  NonNullable<Awaited<ReturnType<typeof getUser>>>,
+  "fullName" | "role"
+> & { userid: string };
 
 /**
  * Generates a signed JSON Web Token (JWT) for a given payload.

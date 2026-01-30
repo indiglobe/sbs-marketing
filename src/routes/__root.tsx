@@ -7,6 +7,7 @@ import { DevTools } from "../integrations/tanstack/devtools";
 import appCss from "../styles/styles.css?url";
 import type { QueryClient } from "@tanstack/react-query";
 import { ThemeProvider } from "@/integrations/theme/theme-provider";
+import { Toaster } from "react-hot-toast";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -47,6 +48,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   }),
 
   shellComponent: RootDocument,
+
+  notFoundComponent: () => <></>,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -56,7 +59,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+
+          <Toaster position="bottom-right" />
+        </ThemeProvider>
         <DevTools />
         <Scripts />
       </body>

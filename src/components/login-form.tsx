@@ -1,9 +1,13 @@
 import { LoginFormSchema, loginServerFn } from "@/server-functions/login";
 import { cn } from "@/utils/cn";
+import { useNavigate } from "@tanstack/react-router";
 import { SubmitEvent } from "react";
 import { useFormStatus } from "react-dom";
+import toast from "react-hot-toast";
 
 export default function LoginForm() {
+  const navigate = useNavigate();
+
   async function onSubmit(e: SubmitEvent) {
     e.preventDefault();
 
@@ -12,14 +16,22 @@ export default function LoginForm() {
     const { error, data } = LoginFormSchema.safeParse(formData);
 
     if (error) {
-      console.log(error);
-
       // TODO: show error message if there is any error while validating
 
       return;
     }
 
-    await loginServerFn({ data });
+    const { status } = await loginServerFn({ data });
+
+    if (status === "success") {
+      toast.custom(() => {
+        return <div className="">Login successful!</div>;
+      });
+      navigate({ to: "/" });
+    }
+    if (status === "error") {
+      toast.custom(<div>Hello World</div>);
+    }
   }
 
   return (
