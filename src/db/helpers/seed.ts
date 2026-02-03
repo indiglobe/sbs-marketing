@@ -1,43 +1,74 @@
 import { db } from "..";
-import { users } from "../schema";
-import type { InferInsertModel } from "drizzle-orm";
+import { UsersTable } from "../schema";
+import { eq, type InferInsertModel } from "drizzle-orm";
 import { faker } from "@faker-js/faker";
 import { encryptPassword } from "@/utils/password";
+import { generate_SBS_Id } from "@/utils/id";
 
 (async () => {
-  await db.delete(users);
+  await db.delete(UsersTable);
 
-  type SelectedUserInsert = Omit<InferInsertModel<typeof users>, "password">;
-  type UserInsert = InferInsertModel<typeof users>;
+  type UserInsert = InferInsertModel<typeof UsersTable>;
+
+  let lastId = "SBS00000";
+
   const usersDetails = (
     [
       {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
         role: "super-admin",
-        plainPassword: "1234567890",
+        id: `SBS00000`,
+        city: faker.location.city(),
+        email: faker.internet.email(),
+        mobile: Math.floor(Math.random() * 10000000000).toString(),
+        password: "123456789",
       },
-    ] as SelectedUserInsert[]
+    ] as UserInsert[]
   ).concat(
-    Array.from({ length: 10 }).map<SelectedUserInsert>(() => {
+    Array.from({ length: 10 }).map<UserInsert>(() => {
+      lastId = generate_SBS_Id(lastId);
       return {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-        plainPassword: faker.internet.password({ length: 8 }),
+        id: lastId,
+        city: faker.location.city(),
+        email: faker.internet.email(),
+        mobile: Math.floor(Math.random() * 10000000000).toString(),
+        password: faker.internet.password({ length: 10 }),
       };
     }),
   );
 
   const usersWithHashedPasswords = await Promise.all(
-    usersDetails.map(async (user) => ({
-      ...user,
-      password: await encryptPassword(user.plainPassword),
-    })),
+    usersDetails.map<Promise<UserInsert>>(async (user) => {
+      return {
+        ...user,
+        password: await encryptPassword(user.password),
+        avatarURL: Math.random() > 0.5 ? faker.image.avatar() : null,
+      };
+    }),
   );
 
   console.log(`______SEEDING-STARTED______`);
+  // insert users
+  await db.insert(UsersTable).values(usersWithHashedPasswords);
 
-  await db.insert(users).values(usersWithHashedPasswords);
+  for (const user of usersWithHashedPasswords) {
+    if (user.role === "super-admin") {
+      continue;
+    }
+
+    await db
+      .update(UsersTable)
+      .set({
+        referredBy:
+          usersWithHashedPasswords[
+            Math.floor(Math.random() * usersWithHashedPasswords.length)
+          ].id,
+      })
+      .where(eq(UsersTable.id, user.id));
+  }
 
   console.log(`______SEEDING-COMPLETED______`);
 

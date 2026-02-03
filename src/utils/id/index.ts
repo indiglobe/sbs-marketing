@@ -1,26 +1,32 @@
-import { uid } from "uid";
-
 /**
- * Generates a numeric-only unique identifier with a fixed length of 8 digits.
+ * Generates the next sequential SBS ID based on the last ID.
  *
- * This function uses the `uid` package as a randomness source and
- * filters out non-numeric characters until the required length is met.
+ * The function expects the last ID to follow the format "SBS" followed by digits,
+ * e.g., "SBS0001". It increments the numeric part while keeping the same length,
+ * padding with leading zeros if necessary.
  *
- * ⚠️ Note: This is suitable for non-critical identifiers (e.g., reference codes,
- * display IDs). Do not use as a cryptographic secret.
+ * @param {string} lastId - The previous SBS ID (e.g., "SBS0001").
+ * @returns {string} The next SBS ID in sequence (e.g., "SBS0002").
  *
- * @returns {string} An 8-digit numeric identifier.
+ * @throws {Error} Throws an error if `lastId` does not match the expected format.
  *
  * @example
- * const id = generateNumericId();
- * // => "48392017"
+ * generate_SBS_Id("SBS0009"); // returns "SBS0010"
+ * generate_SBS_Id("SBS0999"); // returns "SBS1000"
  */
-export function generateNumericId(): string {
-  let numericId = "";
+export function generate_SBS_Id(lastId: string): string {
+  const match = lastId.match(/^(SBS)(\d+)$/);
 
-  while (numericId.length < 10) {
-    numericId += uid().replace(/\D/g, ""); // keep digits only
+  if (!match) {
+    throw new Error("ID must start with 'SBS' followed by a number");
   }
 
-  return numericId.slice(0, 10);
+  const [, prefix, numberPart] = match;
+  const length = numberPart.length;
+
+  const nextNumber = (parseInt(numberPart, 10) + 1)
+    .toString()
+    .padStart(length, "0");
+
+  return `${prefix}${nextNumber}`;
 }

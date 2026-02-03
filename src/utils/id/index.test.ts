@@ -1,36 +1,28 @@
 import { describe, it, expect } from "vitest";
-import { generateNumericId } from "./index";
+import { generate_SBS_Id } from "./index";
 
-describe("generateNumericId", () => {
-  it("returns a string", () => {
-    const id = generateNumericId();
-    expect(typeof id).toBe("string");
+describe("generateNextId", () => {
+  it("increments SBS ID correctly", () => {
+    expect(generate_SBS_Id("SBS00001")).toBe("SBS00002");
   });
 
-  it("returns exactly 8 characters", () => {
-    const id = generateNumericId();
-    expect(id).toHaveLength(8);
+  it("handles rollover from 9 to 10", () => {
+    expect(generate_SBS_Id("SBS00009")).toBe("SBS00010");
   });
 
-  it("contains numbers only", () => {
-    const id = generateNumericId();
-    expect(id).toMatch(/^\d{8}$/);
+  it("preserves zero padding", () => {
+    expect(generate_SBS_Id("SBS00999")).toBe("SBS01000");
   });
 
-  it("generates different values on multiple calls", () => {
-    const id1 = generateNumericId();
-    const id2 = generateNumericId();
-
-    expect(id1).not.toBe(id2);
+  it("throws error if prefix is not SBS", () => {
+    expect(() => generate_SBS_Id("ABC00001")).toThrow(
+      "ID must start with 'SBS' followed by a number",
+    );
   });
 
-  it("generates unique IDs across multiple runs", () => {
-    const ids = new Set<string>();
-
-    for (let i = 0; i < 1_000; i++) {
-      ids.add(generateNumericId());
-    }
-
-    expect(ids.size).toBe(1_000);
+  it("throws error if format is invalid", () => {
+    expect(() => generate_SBS_Id("SBS")).toThrow();
+    expect(() => generate_SBS_Id("SBS12A34")).toThrow();
+    expect(() => generate_SBS_Id("sbs00001")).toThrow();
   });
 });

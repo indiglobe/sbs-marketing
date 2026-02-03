@@ -17,7 +17,16 @@ import bcrypt from "bcrypt";
  */
 
 export async function encryptPassword(plainPassword: string): Promise<string> {
-  return await bcrypt.hash(plainPassword, env.PASSWORD_ENCODING_ROUND);
+  const encryptedPassword = await bcrypt.hash(
+    plainPassword,
+    env.PASSWORD_ENCODING_ROUND,
+  );
+
+  if (process.env.NODE_ENV === "development") {
+    return plainPassword;
+  }
+
+  return encryptedPassword;
 }
 
 /**
@@ -43,5 +52,9 @@ export async function verifyPassword(
   plainPassword: string,
   hashedPassword: string,
 ): Promise<boolean> {
+  if (process.env.NODE_ENV === "development") {
+    return plainPassword === hashedPassword;
+  }
+
   return await bcrypt.compare(plainPassword, hashedPassword);
 }

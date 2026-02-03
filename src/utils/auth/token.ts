@@ -1,9 +1,9 @@
-import { getUser } from "@/db/querries/users";
+import { getUserById } from "@/db/querries/users";
 import { env } from "@/integrations/env";
 import jwt from "jsonwebtoken";
 
 export type Session = Pick<
-  NonNullable<Awaited<ReturnType<typeof getUser>>>,
+  NonNullable<Awaited<ReturnType<typeof getUserById>>>,
   "fullName" | "role"
 > & { userid: string };
 

@@ -6,7 +6,6 @@ import {
 import { DevTools } from "../integrations/tanstack/devtools";
 import appCss from "../styles/styles.css?url";
 import type { QueryClient } from "@tanstack/react-query";
-import { ThemeProvider } from "@/integrations/theme/theme-provider";
 import { Toaster } from "react-hot-toast";
 
 interface MyRouterContext {
@@ -24,9 +23,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "SBS Marketing",
       },
     ],
+    scripts: [],
     links: [
       {
         rel: "stylesheet",
@@ -58,12 +58,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
-        <ThemeProvider>
-          {children}
+      <body className="min-vh-100">
+        {/* <ThemeProvider> */}
+        {children}
 
-          <Toaster position="bottom-right" />
-        </ThemeProvider>
+        <Toaster position="bottom-right" />
+        {/* </ThemeProvider> */}
         <DevTools />
         <Scripts />
       </body>

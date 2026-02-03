@@ -1,3 +1,4 @@
+import { Navbar } from "@/components/navbar";
 import { fetchSession } from "@/utils/auth";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
@@ -13,5 +14,9 @@ export const Route = createFileRoute("/")({
 });
 
 function App() {
-  return <></>;
+  return (
+    <main>
+      <Navbar />
+    </main>
+  );
 }

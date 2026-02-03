@@ -4,7 +4,7 @@ import { verifyPassword } from "@/utils/password";
 import { createServerFn } from "@tanstack/react-start";
 import { setCookie } from "@tanstack/react-start/server";
 import { SESSION } from "@/utils/cookies/names";
-import { getUser } from "@/db/querries/users";
+import { getUserById } from "@/db/querries/users";
 
 /**
  * Zod schema used to validate login form input.
@@ -37,7 +37,7 @@ export type LoginServerFnResponse = Success | Error;
  *
  * This function:
  * - Validates input using `LoginFormSchema`
- * - Fetches the user from the database via `getUser()`
+ * - Fetches the user from the database via `getUserById()`
  * - Verifies the provided password
  * - Generates a session token
  * - Stores the session token in an HTTP-only cookie
@@ -49,7 +49,7 @@ export const loginServerFn = createServerFn({ method: "POST" })
   .inputValidator(LoginFormSchema)
   .handler(async ({ data: { password: userProvidedPW, userid } }) => {
     // Fetch user by user ID
-    const user = await getUser({ userid });
+    const user = await getUserById({ userid });
 
     // If user not found, return structured error
     if (!user) {

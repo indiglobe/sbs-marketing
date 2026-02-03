@@ -50,9 +50,11 @@ export const env = createEnv({
  * - Node.js (process.env)
  */
 function runtimeEnv() {
-  return {
-    ...(typeof process !== "undefined" ? process.env : {}),
-    // @ts-ignore: import.meta.env not available in CJS, safe to ignore
-    ...(typeof import.meta !== "undefined" ? import.meta.env : {}),
-  };
+  if (typeof process !== "undefined") {
+    return process.env;
+  } else if (typeof import.meta !== "undefined") {
+    return import.meta.env;
+  } else {
+    return {};
+  }
 }

@@ -1,9 +1,9 @@
 import { LoginFormSchema, loginServerFn } from "@/server-functions/login";
-import { cn } from "@/utils/cn";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { SubmitEvent } from "react";
 import { useFormStatus } from "react-dom";
 import toast from "react-hot-toast";
+import LoginActionPopupMessage from "./login-popup-message";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -12,102 +12,97 @@ export default function LoginForm() {
     e.preventDefault();
 
     const formData = Object.fromEntries(new FormData(e.target));
-
     const { error, data } = LoginFormSchema.safeParse(formData);
 
     if (error) {
-      // TODO: show error message if there is any error while validating
-
+      console.error(error);
       return;
     }
 
-    const { status } = await loginServerFn({ data });
+    const loginServerFnRes = await loginServerFn({ data });
+    const { status } = loginServerFnRes;
+
+    toast.custom(() => <LoginActionPopupMessage {...loginServerFnRes} />);
 
     if (status === "success") {
-      toast.custom(() => {
-        return <div className="">Login successful!</div>;
-      });
       navigate({ to: "/" });
-    }
-    if (status === "error") {
-      toast.custom(<div>Hello World</div>);
     }
   }
 
   return (
-    <div
-      className={cn(
-        `bg-background flex min-h-screen items-center justify-center`,
-      )}
-    >
-      <form
-        className={cn(
-          `text-background font-brand-secondary bg-brand-200 dark:bg-brand-950 border-brand-600 flex w-full max-w-sm flex-col gap-6 rounded-lg border p-8 shadow-lg`,
-        )}
-        onSubmit={onSubmit}
-      >
-        <h2
-          className={cn(
-            `text-brand-600 dark:text-brand-50 text-center text-2xl font-bold`,
-          )}
-        >
-          Login
-        </h2>
+    <div className="flex min-h-screen items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-background rounded-xl border border-black/5 p-6 shadow-lg dark:border-white/10">
+          <h3 className="mb-6 text-center text-2xl font-semibold">Login</h3>
 
-        {/* User ID */}
-        <div
-          className={cn(
-            `text-brand-600 dark:text-brand-50 flex flex-col gap-2`,
-          )}
-        >
-          <label htmlFor="userid" className={cn(`font-semibold`)}>
-            User ID
-          </label>
-          <input
-            type="text"
-            id="userid"
-            name="userid"
-            placeholder="Enter your user ID"
-            className={cn(
-              `bg-background text-foreground border-brand-400 rounded-md border px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none`,
-            )}
-          />
+          <form onSubmit={onSubmit} className="space-y-4">
+            {/* User ID */}
+            <div className="space-y-1">
+              <label htmlFor="userId" className="text-sm font-medium">
+                User ID
+              </label>
+              <input
+                type="text"
+                id="userId"
+                name="userid"
+                placeholder="Enter your User ID"
+                required
+                className="focus:ring-brand-500 w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm focus:ring-2 focus:outline-none dark:border-white/15 dark:bg-black/20"
+              />
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1">
+              <label htmlFor="password" className="text-sm font-medium">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+                className="focus:ring-brand-500 w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm focus:ring-2 focus:outline-none dark:border-white/15 dark:bg-black/20"
+              />
+            </div>
+
+            {/* Submit */}
+            <Submit />
+
+            {/* Links */}
+            <div className="text-center text-sm opacity-80">
+              <p className="mt-3 mb-0 text-center text-sm opacity-80">
+                Don't have an account?{" "}
+                <Link
+                  to="/signup"
+                  className="text-(--color-brand-600) hover:underline"
+                >
+                  Sign Up
+                </Link>
+              </p>
+              {/* |{" "}
+              <Link
+                to="/signup"
+                className="text-brand-600 hover:text-brand-700 transition"
+              >
+                Sign Up
+              </Link> */}
+            </div>
+          </form>
         </div>
-
-        {/* Password */}
-        <div className={cn(`flex flex-col gap-2`)}>
-          <label
-            htmlFor="password"
-            className={cn(`text-brand-600 dark:text-brand-50 font-semibold`)}
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Enter your password"
-            className={cn(
-              `bg-background text-foreground border-brand-400 rounded-md border px-4 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none`,
-            )}
-          />
-        </div>
-
-        <Submit />
-      </form>
+      </div>
     </div>
   );
 }
 
 function Submit() {
   const status = useFormStatus();
+
   return (
     <button
-      disabled={status.pending}
       type="submit"
-      className={cn(
-        `rounded-md bg-orange-500 py-2 font-semibold text-white transition-colors duration-300 hover:bg-orange-600`,
-      )}
+      disabled={status.pending}
+      className="bg-brand-600 hover:bg-brand-700 w-full rounded-md py-2 font-medium text-white transition disabled:pointer-events-none disabled:opacity-60"
     >
       {status.pending ? "Logging..." : "Login"}
     </button>
