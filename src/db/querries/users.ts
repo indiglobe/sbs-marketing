@@ -1,6 +1,7 @@
-import { eq, getTableColumns, sql, InferInsertModel } from "drizzle-orm";
+import { eq, getTableColumns, sql, InferInsertModel, desc } from "drizzle-orm";
 import { db } from "..";
 import { UsersTable } from "../schema";
+import { generate_SBS_Id } from "@/utils/id";
 
 /**
  * Fetches a user by their unique user ID.
@@ -64,31 +65,40 @@ export async function getUserByEmail({ email }: { email: string }) {
 
 export type InsertUserParams = Omit<InferInsertModel<typeof UsersTable>, "id">;
 
-export async function insertUser({
-  city,
-  email,
-  firstName,
-  lastName,
-  mobile,
-  password,
-  avatarURL,
-  createdAt,
-  referredBy,
-  role,
-}: InsertUserParams) {
+export async function insertUser(data: InsertUserParams) {
   try {
+    const lastUser = (
+      await db
+        .select({ id: UsersTable.id })
+        .from(UsersTable)
+        .orderBy(desc(UsersTable.id))
+        .limit(1)
+    )[0];
+
+    const generatedId = generate_SBS_Id(lastUser.id);
+
     await db.insert(UsersTable).values({
-      city,
-      email,
-      firstName,
-      lastName,
-      mobile,
-      password,
-      avatarURL,
-      role,
-      referredBy,
-      createdAt,
-      id,
+      ...data,
+      id: generatedId,
     });
-  } catch (error) {}
+
+    const { password, ...userDetails } = data;
+
+    return { ...userDetails, id: generatedId };
+  } catch (error) {
+    console.log(error);
+    throw new Error();
+  }
+}
+
+export async function isValidRereralCode({ code }: { code: string }) {
+  const users = await db
+    .select()
+    .from(UsersTable)
+    .where(eq(UsersTable.referredBy, code));
+
+  if (users.length > 0) {
+    return true;
+  }
+  return false;
 }

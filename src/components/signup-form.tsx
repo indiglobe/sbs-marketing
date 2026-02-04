@@ -1,13 +1,45 @@
-import { Link } from "@tanstack/react-router";
+import { SignupFormSchema, signupServerFn } from "@/server-functions/signup";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { SubmitEvent } from "react";
+import { Route } from "@/routes/signup/index";
 
 export default function SignupForm() {
+  const { "referal-code": referalCode } = Route.useSearch();
+  const navigate = useNavigate();
+
+  async function onSubmit(e: SubmitEvent) {
+    e.preventDefault();
+
+    const formData = Object.fromEntries(new FormData(e.target));
+
+    console.log(formData);
+
+    const { error, data } = SignupFormSchema.safeParse(formData);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    console.log(data);
+
+    const signupServerFnRes = await signupServerFn({ data });
+    const { status } = signupServerFnRes;
+
+    // toast.custom(() => <LoginActionPopupMessage {...loginServerFnRes} />);
+
+    if (status === "success") {
+      navigate({ to: "/" });
+    }
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-(--color-background) text-(--color-foreground)">
+    <div className="bg-background text-foreground flex min-h-screen items-center justify-center">
       <div className="w-full max-w-md">
-        <div className="rounded-xl border border-black/5 bg-(--color-background) p-6 shadow-lg">
+        <div className="bg-background rounded-xl border border-black/5 p-6 shadow-lg">
           <h3 className="mb-6 text-center text-2xl font-semibold">Sign Up</h3>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={onSubmit}>
             {/* First Name */}
             <div className="space-y-1">
               <label htmlFor="first-name" className="text-sm font-medium">
@@ -16,7 +48,7 @@ export default function SignupForm() {
               <input
                 type="text"
                 id="first-name"
-                name="first-name"
+                name="firstname"
                 placeholder="John"
                 required
                 className="w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-(--color-brand-500) focus:outline-none"
@@ -31,7 +63,7 @@ export default function SignupForm() {
               <input
                 type="text"
                 id="last-name"
-                name="last-name"
+                name="lastname"
                 placeholder="Doe"
                 required
                 className="w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-(--color-brand-500) focus:outline-none"
@@ -106,10 +138,24 @@ export default function SignupForm() {
               <input
                 type="password"
                 id="confirm-password"
-                name="confirm-password"
+                name="confirmPassword"
                 placeholder="Confirm Password"
                 required
                 className="w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-(--color-brand-500) focus:outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="referal-code" className="text-sm font-medium">
+                Referal code
+              </label>
+              <input
+                type="text"
+                id="referal-code"
+                name="referalCode"
+                className="w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-(--color-brand-500) focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                defaultValue={referalCode}
+                disabled={referalCode ? true : false}
               />
             </div>
 

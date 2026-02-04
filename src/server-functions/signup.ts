@@ -1,10 +1,14 @@
 import z from "zod";
-// import { hashPassword } from "@/utils/password"; // function to hash password
+import { encryptPassword } from "@/utils/password"; // function to hash password
 import { generateToken } from "@/utils/auth/token";
 import { createServerFn } from "@tanstack/react-start";
 import { setCookie } from "@tanstack/react-start/server";
 import { SESSION } from "@/utils/cookies/names";
-import { insertUser, getUserByEmail } from "@/db/querries/users";
+import {
+  insertUser,
+  getUserByEmail,
+  isValidRereralCode,
+} from "@/db/querries/users";
 
 /**
  * Zod schema used to validate signup form input.
@@ -17,13 +21,14 @@ import { insertUser, getUserByEmail } from "@/db/querries/users";
  */
 export const SignupFormSchema = z
   .object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
+    firstname: z.string().min(1, "First name is required"),
+    lastname: z.string().min(1, "Last name is required"),
     city: z.string().min(1, "City is required"),
     mobile: z.string().regex(/^\d{10}$/, "Mobile number must be 10 digits"),
-    email: z.string().email("Invalid email"),
+    email: z.email("Invalid email"),
     password: z.string().min(8).max(16),
     confirmPassword: z.string().min(8).max(16),
+    referalCode: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -62,7 +67,7 @@ export type SignupServerFnResponse = Success | Error;
 export const signupServerFn = createServerFn({ method: "POST" })
   .inputValidator(SignupFormSchema)
   .handler(async ({ data }) => {
-    const { firstName, lastName, city, mobile, email, password } = data;
+    const { firstname, lastname, city, mobile, email, password } = data;
 
     // Check if user already exists by email or mobile
     const existingUser = await getUserByEmail({ email });
@@ -75,31 +80,44 @@ export const signupServerFn = createServerFn({ method: "POST" })
       } satisfies SignupServerFnResponse;
     }
 
+    console.log(data);
+
+    let referalCode: string | null = data.referalCode ?? null;
+
+    const isReferalCodeValid = await isValidRereralCode({
+      code: referalCode ?? "",
+    });
+
+    if (!isReferalCodeValid) {
+      referalCode = null;
+    }
+
     // Hash the password before storing
-    // const hashedPassword = await hashPassword(password);
+    const hashedPassword = await encryptPassword(password);
 
     // Insert new user into database
-    // const newUser = await insertUser({
-    //   firstName,
-    //   lastName,
-    //   city,
-    //   mobile,
-    //   email,
-    //   password: hashedPassword,
-    // });
+    const newUser = await insertUser({
+      firstName: firstname,
+      lastName: lastname,
+      password: hashedPassword,
+      city,
+      email,
+      mobile,
+      referredBy: referalCode,
+    });
 
-    // Generate session token for the new user
-    // const sessionToken = generateToken({
-    //   userid: newUser.,
-    //   fullName: `${firstName} ${lastName}`,
-    //   role: newUser.role,
-    // });
+    // // Generate session token for the new user
+    const sessionToken = generateToken({
+      userid: newUser.id,
+      fullName: `${newUser.firstName} ${newUser.lastName}`,
+      role: newUser.role!,
+    });
 
-    // Store token in HTTP-only cookie
-    // setCookie(SESSION, sessionToken, {
-    //   httpOnly: true,
-    //   maxAge: 60 * 60 * 24, // 24 hours
-    // });
+    // // Store token in HTTP-only cookie
+    setCookie(SESSION, sessionToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24, // 24 hours
+    });
 
     // Return success response
     return {

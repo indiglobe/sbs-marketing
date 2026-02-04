@@ -22,10 +22,6 @@ export async function encryptPassword(plainPassword: string): Promise<string> {
     env.PASSWORD_ENCODING_ROUND,
   );
 
-  if (process.env.NODE_ENV === "development") {
-    return plainPassword;
-  }
-
   return encryptedPassword;
 }
 
@@ -52,9 +48,5 @@ export async function verifyPassword(
   plainPassword: string,
   hashedPassword: string,
 ): Promise<boolean> {
-  if (process.env.NODE_ENV === "development") {
-    return plainPassword === hashedPassword;
-  }
-
   return await bcrypt.compare(plainPassword, hashedPassword);
 }

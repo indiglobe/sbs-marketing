@@ -22,7 +22,7 @@ import { generate_SBS_Id } from "@/utils/id";
         city: faker.location.city(),
         email: faker.internet.email(),
         mobile: Math.floor(Math.random() * 10000000000).toString(),
-        password: "123456789",
+        password: "12121212",
       },
     ] as UserInsert[]
   ).concat(
@@ -35,7 +35,7 @@ import { generate_SBS_Id } from "@/utils/id";
         city: faker.location.city(),
         email: faker.internet.email(),
         mobile: Math.floor(Math.random() * 10000000000).toString(),
-        password: faker.internet.password({ length: 10 }),
+        password: "12121212",
       };
     }),
   );
@@ -52,25 +52,29 @@ import { generate_SBS_Id } from "@/utils/id";
 
   console.log(`______SEEDING-STARTED______`);
   // insert users
-  await db.insert(UsersTable).values(usersWithHashedPasswords);
-
-  for (const user of usersWithHashedPasswords) {
-    if (user.role === "super-admin") {
-      continue;
-    }
-
-    await db
-      .update(UsersTable)
-      .set({
-        referredBy:
-          usersWithHashedPasswords[
-            Math.floor(Math.random() * usersWithHashedPasswords.length)
-          ].id,
-      })
-      .where(eq(UsersTable.id, user.id));
-  }
+  await pushUserDetails();
 
   console.log(`______SEEDING-COMPLETED______`);
+
+  async function pushUserDetails() {
+    await db.insert(UsersTable).values(usersWithHashedPasswords);
+
+    for (const user of usersWithHashedPasswords) {
+      if (user.role === "super-admin") {
+        continue;
+      }
+
+      await db
+        .update(UsersTable)
+        .set({
+          referredBy:
+            usersWithHashedPasswords[
+              Math.floor(Math.random() * usersWithHashedPasswords.length)
+            ].id,
+        })
+        .where(eq(UsersTable.id, user.id));
+    }
+  }
 
   process.exit();
 })();

@@ -44,7 +44,14 @@ export function Navbar() {
               to="/"
               className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
             >
-              Team
+              My team
+            </Link>
+
+            <Link
+              to="/"
+              className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
+            >
+              Helpline
             </Link>
 
             <button className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900">
@@ -95,7 +102,14 @@ export function Navbar() {
             to="/"
             className="block rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
           >
-            Team
+            My team
+          </Link>
+
+          <Link
+            to="/"
+            className="block rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+          >
+            Helpline
           </Link>
 
           <Link
