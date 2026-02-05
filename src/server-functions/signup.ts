@@ -80,8 +80,6 @@ export const signupServerFn = createServerFn({ method: "POST" })
       } satisfies SignupServerFnResponse;
     }
 
-    console.log(data);
-
     let referalCode: string | null = data.referalCode ?? null;
 
     const isReferalCodeValid = await isValidRereralCode({

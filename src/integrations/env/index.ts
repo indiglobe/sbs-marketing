@@ -19,7 +19,7 @@ export const env = createEnv({
   clientPrefix: "VITE_",
 
   client: {
-    // VITE_APP_TITLE: z.string().min(1),
+    VITE_APP_HOST_URL: z.string(),
   },
 
   /**
@@ -50,11 +50,17 @@ export const env = createEnv({
  * - Node.js (process.env)
  */
 function runtimeEnv() {
-  if (typeof process !== "undefined") {
-    return process.env;
-  } else if (typeof import.meta !== "undefined") {
-    return import.meta.env;
-  } else {
-    return {};
+  const env: Record<string, string | undefined> = {};
+
+  // Node (real env)
+  if (typeof process !== "undefined" && process.env) {
+    Object.assign(env, process.env);
   }
+
+  // Vite (client + SSR)
+  if (typeof import.meta !== "undefined" && import.meta.env) {
+    Object.assign(env, import.meta.env);
+  }
+
+  return env;
 }

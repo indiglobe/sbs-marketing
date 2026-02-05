@@ -12,7 +12,10 @@ import {
 import { cn } from "@/utils/cn";
 import { logoutServerFn } from "@/server-functions/logout";
 import toast from "react-hot-toast";
-import { LogoutActionPopupMessage } from "./login-popup-message";
+import { LogoutActionPopupMessage } from "./popup-message";
+import { env } from "@/integrations/env";
+import { Route } from "@/routes/index";
+import { Copy } from "lucide-react";
 
 export function Navbar() {
   const [open, setOpen] = useState<boolean>(false);
@@ -54,9 +57,17 @@ export function Navbar() {
               Helpline
             </Link>
 
-            <button className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900">
+            {/* <button className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900">
               Refer
-            </button>
+            </button> */}
+
+            <ReferalModal
+              triggerButton={
+                <button className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900">
+                  Refer
+                </button>
+              }
+            />
 
             <LogoutModal logoutButton={<LogoutButton />} />
           </div>
@@ -112,12 +123,17 @@ export function Navbar() {
             Helpline
           </Link>
 
-          <Link
-            to="/"
-            className="block rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
-          >
+          {/* <button className="block rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100">
             Refer
-          </Link>
+          </button> */}
+
+          <ReferalModal
+            triggerButton={
+              <button className="block w-full rounded-xl px-4 py-2 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100">
+                Refer
+              </button>
+            }
+          />
 
           <LogoutModal
             logoutButton={
@@ -151,11 +167,26 @@ export function LogoutModal({ logoutButton }: { logoutButton: ReactNode }) {
   const navigate = useNavigate();
 
   async function logoutAction() {
-    const logoutServerFnRes = await logoutServerFn();
+    const { status } = await logoutServerFn();
 
-    toast.custom(() => <LogoutActionPopupMessage {...logoutServerFnRes} />);
+    if (status === "success") {
+      toast.custom(() => (
+        <LogoutActionPopupMessage
+          status={status}
+          message="You have succesfully logged out"
+        />
+      ));
+      navigate({ to: "/" });
+    }
 
-    navigate({ to: "/" });
+    if (status === "error") {
+      toast.custom(() => (
+        <LogoutActionPopupMessage
+          status={status}
+          message="Uh-uh... Something went wrong while logging out."
+        />
+      ));
+    }
   }
 
   return (
@@ -180,6 +211,44 @@ export function LogoutModal({ logoutButton }: { logoutButton: ReactNode }) {
           </DialogFooter>
         </DialogContent>
       </form>
+    </Dialog>
+  );
+}
+
+export function ReferalModal({ triggerButton }: { triggerButton: ReactNode }) {
+  const { userid } = Route.useLoaderData();
+  const shareableUrl = `${env.VITE_APP_HOST_URL}/signup?referal-code=${userid!}`;
+
+  const copyTextToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(shareableUrl);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <Dialog>
+      <div>
+        <DialogTrigger asChild>{triggerButton}</DialogTrigger>
+        <DialogContent className="border-brand-500 sm:max-w-sm">
+          <DialogHeader className="text-left">
+            <DialogTitle>Refer Now</DialogTitle>
+            <DialogDescription>
+              Copy and share to let others join through your referal code.
+            </DialogDescription>
+            <button
+              onClick={copyTextToClipboard}
+              className="mt-3 flex cursor-pointer items-center justify-between rounded-md border border-green-500 bg-green-100 px-3 py-2 text-sm text-green-600"
+            >
+              <p>/signup?referal-code={userid!}</p>
+              <span>
+                <Copy className="size-5" />
+              </span>
+            </button>
+          </DialogHeader>
+        </DialogContent>
+      </div>
     </Dialog>
   );
 }

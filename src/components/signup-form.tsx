@@ -2,6 +2,7 @@ import { SignupFormSchema, signupServerFn } from "@/server-functions/signup";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { SubmitEvent } from "react";
 import { Route } from "@/routes/signup/index";
+import { cn } from "@/utils/cn";
 
 export default function SignupForm() {
   const { "referal-code": referalCode } = Route.useSearch();
@@ -153,9 +154,12 @@ export default function SignupForm() {
                 type="text"
                 id="referal-code"
                 name="referalCode"
-                className="w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-(--color-brand-500) focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className={cn(
+                  "w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-(--color-brand-500) focus:outline-none",
+                  { "cursor-not-allowed opacity-50": referalCode },
+                )}
                 defaultValue={referalCode}
-                disabled={referalCode ? true : false}
+                readOnly={!!referalCode}
               />
             </div>
 

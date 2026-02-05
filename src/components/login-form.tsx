@@ -3,7 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { SubmitEvent } from "react";
 import { useFormStatus } from "react-dom";
 import toast from "react-hot-toast";
-import LoginActionPopupMessage from "./login-popup-message";
+import { LoginActionPopupMessage } from "./popup-message";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -15,14 +15,53 @@ export default function LoginForm() {
     const { error, data } = LoginFormSchema.safeParse(formData);
 
     if (error) {
-      console.error(error);
+      if (
+        error._zod.def[0].path[0] === "userid" &&
+        error._zod.def[0].code === "invalid_format"
+      ) {
+        toast.custom(() => (
+          <LoginActionPopupMessage
+            status="error"
+            message="Please provide valid id format"
+          />
+        ));
+        return;
+      }
+      if (
+        error._zod.def[0].path[0] === "password" &&
+        (error._zod.def[0].code === "too_big" ||
+          error._zod.def[0].code === "too_small")
+      ) {
+        toast.custom(() => (
+          <LoginActionPopupMessage
+            status="error"
+            message="Password should be within 8 to 16 character"
+          />
+        ));
+        return;
+      }
       return;
     }
 
     const loginServerFnRes = await loginServerFn({ data });
-    const { status } = loginServerFnRes;
+    const { status, errorMessage } = loginServerFnRes;
 
-    toast.custom(() => <LoginActionPopupMessage {...loginServerFnRes} />);
+    console.log(status);
+
+    if (status === "success") {
+      toast.custom(() => (
+        <LoginActionPopupMessage
+          status="success"
+          message="You have successfuly logged in"
+        />
+      ));
+    }
+
+    if (status === "error") {
+      toast.custom(() => (
+        <LoginActionPopupMessage status="error" message={errorMessage} />
+      ));
+    }
 
     if (status === "success") {
       navigate({ to: "/" });

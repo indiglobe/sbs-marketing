@@ -13,7 +13,7 @@ import { getUserById } from "@/db/querries/users";
  * - `password`: between 8 and 16 characters
  */
 export const LoginFormSchema = z.object({
-  userid: z.string().min(8).max(8),
+  userid: z.string().regex(/^SBS\d{5}$/),
   password: z.string().min(8).max(16),
 });
 

@@ -28,14 +28,12 @@ export const fetchSession = createServerFn({ method: "GET" }).handler(() => {
     const isSessionValid = verifyToken(session);
 
     // Token verification failed
-    if (!isSessionValid) {
-      return false;
+    if (isSessionValid) {
+      return isSessionValid;
     }
+    return false;
   } catch (error) {
     // Token verification threw an error (expired, malformed, etc.)
     return false;
   }
-
-  // Session exists and token is valid
-  return true;
 });

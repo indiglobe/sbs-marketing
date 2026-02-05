@@ -11,6 +11,17 @@ export const Route = createFileRoute("/")({
       throw redirect({ to: "/login" });
     }
   },
+  loader: async () => {
+    const session = await fetchSession();
+
+    if (!session) {
+      return { userid: null };
+    }
+
+    return {
+      userid: session.userid,
+    };
+  },
 });
 
 function App() {
