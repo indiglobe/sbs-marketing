@@ -1,16 +1,22 @@
+import { Avatar } from "@/components/avatar";
+import BottomReferButton from "@/components/bottom-refer-button";
+import { Countdown } from "@/components/countdown";
+// import NameWithRank from "@/components/name-with-rank";
 import { Navbar } from "@/components/navbar";
 import { fetchSession } from "@/utils/auth";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  component: App,
-  beforeLoad: async () => {
-    const isValidUser = await fetchSession();
+  component: RouteComponent,
 
-    if (!isValidUser) {
+  beforeLoad: async () => {
+    const session = await fetchSession();
+
+    if (!session) {
       throw redirect({ to: "/login" });
     }
   },
+
   loader: async () => {
     const session = await fetchSession();
 
@@ -24,10 +30,18 @@ export const Route = createFileRoute("/")({
   },
 });
 
-function App() {
+function RouteComponent() {
   return (
     <main>
       <Navbar />
+      <div>
+        {/* <NameWithRank /> */}
+        <Avatar />
+      </div>
+      <div className="fixed bottom-0 flex w-full items-center justify-between">
+        <BottomReferButton />
+        <Countdown targetDate={new Date("2026-02-10")} />
+      </div>
     </main>
   );
 }

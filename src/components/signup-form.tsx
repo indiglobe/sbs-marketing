@@ -3,8 +3,11 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { SubmitEvent } from "react";
 import { Route } from "@/routes/signup/index";
 import { cn } from "@/utils/cn";
+import toast from "react-hot-toast";
+import { SignupActionPopupMessage } from "./popup-message";
 
 export default function SignupForm() {
+  // rename object property to easily use them
   const { "referal-code": referalCode } = Route.useSearch();
   const navigate = useNavigate();
 
@@ -13,16 +16,25 @@ export default function SignupForm() {
 
     const formData = Object.fromEntries(new FormData(e.target));
 
-    console.log(formData);
-
     const { error, data } = SignupFormSchema.safeParse(formData);
 
     if (error) {
       console.error(error);
+      if (
+        error._zod.def[0].path[0] === "mobile" &&
+        error._zod.def[0].code === "invalid_format"
+      ) {
+        toast.custom(() => (
+          <SignupActionPopupMessage
+            status="error"
+            // message="Please provide a valid name"
+            message={error._zod.output.mobile}
+          />
+        ));
+        return;
+      }
       return;
     }
-
-    console.log(data);
 
     const signupServerFnRes = await signupServerFn({ data });
     const { status } = signupServerFnRes;

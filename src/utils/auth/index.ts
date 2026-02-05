@@ -1,6 +1,6 @@
 import { getCookie } from "@tanstack/react-start/server";
 import { SESSION } from "@/utils/cookies/names";
-import { verifyToken } from "./token";
+import { Session, verifyToken } from "./token";
 import { createServerFn } from "@tanstack/react-start";
 
 /**
@@ -14,26 +14,28 @@ import { createServerFn } from "@tanstack/react-start";
  *
  * @returns {Promise<boolean>} `true` if the session exists and is valid, otherwise `false`
  */
-export const fetchSession = createServerFn({ method: "GET" }).handler(() => {
-  // Retrieve the session token from cookies
-  const session = getCookie(SESSION);
+export const fetchSession = createServerFn({ method: "GET" }).handler(
+  (): Session | null => {
+    // Retrieve the session token from cookies
+    const session = getCookie(SESSION);
 
-  // No session cookie found
-  if (!session) {
-    return false;
-  }
-
-  try {
-    // Verify the session token (e.g., JWT validation)
-    const isSessionValid = verifyToken(session);
-
-    // Token verification failed
-    if (isSessionValid) {
-      return isSessionValid;
+    // No session cookie found
+    if (!session) {
+      return null;
     }
-    return false;
-  } catch (error) {
-    // Token verification threw an error (expired, malformed, etc.)
-    return false;
-  }
-});
+
+    try {
+      // Verify the session token (e.g., JWT validation)
+      const isSessionValid = verifyToken(session);
+
+      // Token verification failed
+      if (isSessionValid) {
+        return isSessionValid;
+      }
+      return null;
+    } catch (error) {
+      // Token verification threw an error (expired, malformed, etc.)
+      return null;
+    }
+  },
+);

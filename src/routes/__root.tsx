@@ -59,10 +59,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="min-vh-100">
-        {/* <ThemeProvider> */}
         {children}
 
         <Toaster position="bottom-right" />
+        {/* <ThemeProvider> */}
         {/* </ThemeProvider> */}
         <DevTools />
         <Scripts />

@@ -231,7 +231,7 @@ export function ReferalModal({ triggerButton }: { triggerButton: ReactNode }) {
     <Dialog>
       <div>
         <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-        <DialogContent className="border-brand-500 sm:max-w-sm">
+        <DialogContent className="border-green-500 sm:max-w-sm">
           <DialogHeader className="text-left">
             <DialogTitle>Refer Now</DialogTitle>
             <DialogDescription>

@@ -15,6 +15,7 @@ export default function LoginForm() {
     const { error, data } = LoginFormSchema.safeParse(formData);
 
     if (error) {
+      console.error(error);
       if (
         error._zod.def[0].path[0] === "userid" &&
         error._zod.def[0].code === "invalid_format"
@@ -45,8 +46,6 @@ export default function LoginForm() {
 
     const loginServerFnRes = await loginServerFn({ data });
     const { status, errorMessage } = loginServerFnRes;
-
-    console.log(status);
 
     if (status === "success") {
       toast.custom(() => (
