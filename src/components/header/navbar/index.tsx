@@ -12,25 +12,28 @@ import {
 import { cn } from "@/utils/cn";
 import { logoutServerFn } from "@/server-functions/logout";
 import toast from "react-hot-toast";
-import { LogoutActionPopupMessage } from "./popup-message";
 import { env } from "@/integrations/env";
-import { Route } from "@/routes/index";
+import { Route } from "@/routes/(auth)/index";
 import { Copy } from "lucide-react";
+import { Image } from "@unpic/react";
+import { LogoutActionPopupMessage } from "@/ui/popup-message";
+import { Popover, PopoverContent, PopoverTrigger } from "@/ui/shadcn/popover";
+import { Avatar } from "@/ui/avatar";
 
 export function Navbar() {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <nav className="sticky top-0 z-50 border-b border-gray-200 bg-blue-200 backdrop-blur">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-blue-600 to-indigo-600 font-bold text-white shadow">
-              L
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white md:h-12 md:w-12">
+              <Image src="/logo512.png" alt="logo" layout="fullWidth" />
             </div>
             <span className="text-lg font-semibold tracking-tight text-gray-900">
-              YourLogo
+              SBS Marketing
             </span>
           </div>
 
@@ -57,10 +60,6 @@ export function Navbar() {
               Helpline
             </Link>
 
-            {/* <button className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900">
-              Refer
-            </button> */}
-
             <ReferalModal
               triggerButton={
                 <button className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900">
@@ -69,7 +68,32 @@ export function Navbar() {
               }
             />
 
-            <LogoutModal logoutButton={<LogoutButton />} />
+            {/* <LogoutModal logoutButton={<LogoutButton />} /> */}
+          </div>
+
+          <div className={cn(`max-md:hidden`)}>
+            <Popover>
+              <PopoverTrigger asChild>
+                {/* <div>Lorem ipsum dolor</div> */}
+                <button>
+                  <Avatar alt="ser-image" src="" fallback="rere" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="end"
+                className={cn(`bg-brand-200 border-brand-600`)}
+              >
+                <LogoutModal
+                  logoutButton={
+                    <LogoutButton
+                      className={cn(
+                        `border-brand-600 hover:bg-brand-200 bg-brand-50 w-full border`,
+                      )}
+                    />
+                  }
+                />
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Mobile Toggle */}
@@ -99,7 +123,7 @@ export function Navbar() {
       <div
         className={`transition-all duration-200 ease-out md:hidden ${
           open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        } overflow-hidden border-t border-gray-200 bg-white`}
+        } overflow-hidden border-t border-gray-200 bg-blue-200`}
       >
         <div className="space-y-2 px-4 py-4">
           <Link

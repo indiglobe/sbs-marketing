@@ -1,14 +1,15 @@
 import { SignupFormSchema, signupServerFn } from "@/server-functions/signup";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { SubmitEvent } from "react";
-import { Route } from "@/routes/signup/index";
+import { Route } from "@/routes/(guest)/signup/index";
 import { cn } from "@/utils/cn";
 import toast from "react-hot-toast";
 import { SignupActionPopupMessage } from "./popup-message";
+import { RouteSerach as SignupRouteSearch } from "@/routes/(guest)/signup";
 
 export default function SignupForm() {
   // rename object property to easily use them
-  const { "referal-code": referalCode } = Route.useSearch();
+  const { "referal-code": referalCode }: SignupRouteSearch = Route.useSearch();
   const navigate = useNavigate();
 
   async function onSubmit(e: SubmitEvent) {

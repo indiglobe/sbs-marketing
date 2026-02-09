@@ -1,3 +1,4 @@
+import { cn } from "@/utils/cn";
 import { useEffect, useState } from "react";
 
 type CountdownProps = {
@@ -39,20 +40,35 @@ export function Countdown({ targetDate }: CountdownProps) {
   }, [target]);
 
   return (
-    <div className="flex gap-4 text-center">
-      <TimeBox label="Days" value={timeLeft.days} />
-      <TimeBox label="Hours" value={timeLeft.hours} />
-      <TimeBox label="Min" value={timeLeft.minutes} />
-      <TimeBox label="Sec" value={timeLeft.seconds} />
+    <div
+      className={cn(
+        `flex flex-col gap-x-4 gap-y-2 lg:flex-row lg:items-center`,
+      )}
+    >
+      <div className={cn(`text-brand-600 text-center text-2xl font-bold`)}>
+        Time untill next monthely reward closing
+      </div>
+      <div className="m-auto flex max-w-max gap-1 text-center md:m-0 md:ml-auto lg:flex-row">
+        <TimeBox label="Days" value={timeLeft.days} />
+        <TimeBox label="Hours" value={timeLeft.hours} />
+        <TimeBox label="Min" value={timeLeft.minutes} />
+        <TimeBox label="Sec" value={timeLeft.seconds} />
+      </div>
     </div>
   );
 }
 
 function TimeBox({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-background flex flex-col items-center rounded-lg px-4 py-3 shadow-sm">
-      <span className="text-foreground text-2xl font-bold">
-        {String(value).padStart(2, "0")}
+    <div className="border-brand-500 bg-brand-100 flex flex-col items-center rounded-lg border px-2 py-1 shadow-sm">
+      <span className="text-foreground relative size-10 text-2xl font-bold">
+        <span
+          className={cn(
+            `text-brand-600 absolute inset-0 flex items-center justify-center`,
+          )}
+        >
+          {String(value).padStart(2, "0")}
+        </span>
       </span>
       <span className="text-foreground/70 text-xs tracking-wider uppercase">
         {label}

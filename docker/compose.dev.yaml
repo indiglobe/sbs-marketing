@@ -1,16 +1,16 @@
 name: sbs-marketing-dev
 
 networks:
-  development:
+  sbs-marketing-dev:
     driver: bridge
 
 services:
   sbs-dev:
-    container_name: sbs-marketing-database
+    container_name: ssbs-marketing-dev-database
     image: mysql:8.4
     environment:
       MYSQL_ROOT_PASSWORD: password
     ports:
       - 3305:3306
     networks:
-      - development
+      - sbs-marketing-dev

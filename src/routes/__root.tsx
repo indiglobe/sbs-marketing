@@ -7,6 +7,7 @@ import { DevTools } from "../integrations/tanstack/devtools";
 import appCss from "../styles/styles.css?url";
 import type { QueryClient } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
+import { cn } from "@/utils/cn";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -58,7 +59,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="min-vh-100">
+      <body className={cn(`flex min-h-svh flex-col`)}>
         {children}
 
         <Toaster position="bottom-right" />

@@ -1,8 +1,7 @@
-import LoginForm from "@/components/login-form";
 import { fetchSession } from "@/utils/auth";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/login/")({
+export const Route = createFileRoute("/(guest)")({
   component: RouteComponent,
 
   beforeLoad: async () => {
@@ -15,5 +14,9 @@ export const Route = createFileRoute("/login/")({
 });
 
 function RouteComponent() {
-  return <LoginForm />;
+  return (
+    <>
+      <Outlet />
+    </>
+  );
 }

@@ -9,86 +9,142 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as SignupIndexRouteImport } from './routes/signup/index'
-import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as guestRouteRouteImport } from './routes/(guest)/route'
+import { Route as authRouteRouteImport } from './routes/(auth)/route'
+import { Route as authIndexRouteImport } from './routes/(auth)/index'
+import { Route as guestSignupIndexRouteImport } from './routes/(guest)/signup/index'
+import { Route as guestLoginIndexRouteImport } from './routes/(guest)/login/index'
 
-const IndexRoute = IndexRouteImport.update({
+const guestRouteRoute = guestRouteRouteImport.update({
+  id: '/(guest)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authRouteRoute = authRouteRouteImport.update({
+  id: '/(auth)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authIndexRoute = authIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
-const SignupIndexRoute = SignupIndexRouteImport.update({
+const guestSignupIndexRoute = guestSignupIndexRouteImport.update({
   id: '/signup/',
   path: '/signup/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => guestRouteRoute,
 } as any)
-const LoginIndexRoute = LoginIndexRouteImport.update({
+const guestLoginIndexRoute = guestLoginIndexRouteImport.update({
   id: '/login/',
   path: '/login/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => guestRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/login/': typeof LoginIndexRoute
-  '/signup/': typeof SignupIndexRoute
+  '/': typeof authIndexRoute
+  '/login/': typeof guestLoginIndexRoute
+  '/signup/': typeof guestSignupIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/login': typeof LoginIndexRoute
-  '/signup': typeof SignupIndexRoute
+  '/': typeof authIndexRoute
+  '/login': typeof guestLoginIndexRoute
+  '/signup': typeof guestSignupIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/login/': typeof LoginIndexRoute
-  '/signup/': typeof SignupIndexRoute
+  '/(auth)': typeof authRouteRouteWithChildren
+  '/(guest)': typeof guestRouteRouteWithChildren
+  '/(auth)/': typeof authIndexRoute
+  '/(guest)/login/': typeof guestLoginIndexRoute
+  '/(guest)/signup/': typeof guestSignupIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/' | '/login/' | '/signup/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/login' | '/signup'
-  id: '__root__' | '/' | '/login/' | '/signup/'
+  id:
+    | '__root__'
+    | '/(auth)'
+    | '/(guest)'
+    | '/(auth)/'
+    | '/(guest)/login/'
+    | '/(guest)/signup/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  LoginIndexRoute: typeof LoginIndexRoute
-  SignupIndexRoute: typeof SignupIndexRoute
+  authRouteRoute: typeof authRouteRouteWithChildren
+  guestRouteRoute: typeof guestRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/(guest)': {
+      id: '/(guest)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof guestRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)': {
+      id: '/(auth)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/': {
+      id: '/(auth)/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof authIndexRouteImport
+      parentRoute: typeof authRouteRoute
     }
-    '/signup/': {
-      id: '/signup/'
+    '/(guest)/signup/': {
+      id: '/(guest)/signup/'
       path: '/signup'
       fullPath: '/signup/'
-      preLoaderRoute: typeof SignupIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof guestSignupIndexRouteImport
+      parentRoute: typeof guestRouteRoute
     }
-    '/login/': {
-      id: '/login/'
+    '/(guest)/login/': {
+      id: '/(guest)/login/'
       path: '/login'
       fullPath: '/login/'
-      preLoaderRoute: typeof LoginIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof guestLoginIndexRouteImport
+      parentRoute: typeof guestRouteRoute
     }
   }
 }
 
+interface authRouteRouteChildren {
+  authIndexRoute: typeof authIndexRoute
+}
+
+const authRouteRouteChildren: authRouteRouteChildren = {
+  authIndexRoute: authIndexRoute,
+}
+
+const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
+  authRouteRouteChildren,
+)
+
+interface guestRouteRouteChildren {
+  guestLoginIndexRoute: typeof guestLoginIndexRoute
+  guestSignupIndexRoute: typeof guestSignupIndexRoute
+}
+
+const guestRouteRouteChildren: guestRouteRouteChildren = {
+  guestLoginIndexRoute: guestLoginIndexRoute,
+  guestSignupIndexRoute: guestSignupIndexRoute,
+}
+
+const guestRouteRouteWithChildren = guestRouteRoute._addFileChildren(
+  guestRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  LoginIndexRoute: LoginIndexRoute,
-  SignupIndexRoute: SignupIndexRoute,
+  authRouteRoute: authRouteRouteWithChildren,
+  guestRouteRoute: guestRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

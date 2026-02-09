@@ -45,3 +45,7 @@
     @apply cursor-pointer;
   }
 }
+
+.react-flow__panel {
+  display: none;
+}
