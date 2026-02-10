@@ -18,14 +18,17 @@ export const Route = createFileRoute("/(auth)")({
 
     return {
       userName: session?.fullName,
+      userid: session?.userid,
     };
   },
 });
 
 function RouteComponent() {
+  const { userid } = Route.useLoaderData();
+
   return (
     <>
-      <Header />
+      <Header userid={userid!} />
       <Outlet />
     </>
   );

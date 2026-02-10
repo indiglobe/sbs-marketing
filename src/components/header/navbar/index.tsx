@@ -13,14 +13,13 @@ import { cn } from "@/utils/cn";
 import { logoutServerFn } from "@/server-functions/logout";
 import toast from "react-hot-toast";
 import { env } from "@/integrations/env";
-import { Route } from "@/routes/(auth)/index";
 import { Copy } from "lucide-react";
 import { Image } from "@unpic/react";
 import { LogoutActionPopupMessage } from "@/ui/popup-message";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/shadcn/popover";
 import { Avatar } from "@/ui/avatar";
 
-export function Navbar() {
+export function Navbar({ userid }: { userid: string }) {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
@@ -40,14 +39,14 @@ export function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden items-center md:flex">
             <Link
-              to="/"
+              to="/kyc"
               className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
             >
               KYC
             </Link>
 
             <Link
-              to="/"
+              to="/my-team"
               className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
             >
               My team
@@ -61,6 +60,7 @@ export function Navbar() {
             </Link>
 
             <ReferalModal
+              userid={userid}
               triggerButton={
                 <button className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900">
                   Refer
@@ -152,6 +152,7 @@ export function Navbar() {
           </button> */}
 
           <ReferalModal
+            userid={userid}
             triggerButton={
               <button className="block w-full rounded-xl px-4 py-2 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100">
                 Refer
@@ -239,9 +240,14 @@ export function LogoutModal({ logoutButton }: { logoutButton: ReactNode }) {
   );
 }
 
-export function ReferalModal({ triggerButton }: { triggerButton: ReactNode }) {
-  const { userid } = Route.useLoaderData();
-  const shareableUrl = `${env.VITE_APP_HOST_URL}/signup?referal-code=${userid!}`;
+export function ReferalModal({
+  triggerButton,
+  userid,
+}: {
+  triggerButton: ReactNode;
+  userid: string;
+}) {
+  const shareableUrl = `${env.VITE_APP_HOST_URL}/signup?referal-code=${userid}`;
 
   const copyTextToClipboard = async () => {
     try {

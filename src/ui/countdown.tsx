@@ -28,7 +28,8 @@ function calculateTimeLeft(target: Date): TimeLeft {
 }
 
 export function Countdown({ targetDate }: CountdownProps) {
-  const target = new Date(targetDate);
+  const isValidDate = !isNaN(new Date(targetDate).getTime());
+  const target = new Date(isValidDate ? targetDate : Date.now());
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft(target));
 
   useEffect(() => {

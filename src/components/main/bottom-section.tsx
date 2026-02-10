@@ -1,8 +1,27 @@
+import { getUpcomingEventServerFn } from "@/server-functions/db-model/events";
 import BottomReferButton from "@/ui/bottom-refer-button";
 import { Countdown } from "@/ui/countdown";
 import { cn } from "@/utils/cn";
+import { useEffect, useState } from "react";
 
 export default function BottomSection() {
+  const [isRendered, setIsRendered] = useState(false);
+  const [countDownDate, setCountDownDate] = useState("");
+
+  useEffect(() => {
+    setIsRendered(!isRendered);
+
+    (async () => {
+      const upComingEventDate = await getUpcomingEventServerFn();
+
+      setCountDownDate(upComingEventDate.scheduledFor.toString());
+    })();
+  }, []);
+
+  if (!isRendered) {
+    return <></>;
+  }
+
   return (
     <div
       className={cn(
@@ -11,7 +30,7 @@ export default function BottomSection() {
       )}
     >
       <BottomReferButton />
-      <Countdown targetDate={new Date("2026-02-10")} />
+      <Countdown targetDate={new Date(countDownDate)} />
     </div>
   );
 }

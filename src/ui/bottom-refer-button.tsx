@@ -1,5 +1,5 @@
 import { env } from "@/integrations/env";
-import { Route } from "@/routes/(auth)";
+import { Route } from "@/routes/(auth)/index";
 import { cn } from "@/utils/cn";
 import { ComponentProps } from "react";
 

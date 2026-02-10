@@ -6,7 +6,7 @@ networks:
 
 services:
   sbs-dev:
-    container_name: ssbs-marketing-dev-database
+    container_name: sbs-marketing-dev-database
     image: mysql:8.4
     environment:
       MYSQL_ROOT_PASSWORD: password

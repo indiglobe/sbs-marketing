@@ -14,6 +14,8 @@ import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as authIndexRouteImport } from './routes/(auth)/index'
 import { Route as guestSignupIndexRouteImport } from './routes/(guest)/signup/index'
 import { Route as guestLoginIndexRouteImport } from './routes/(guest)/login/index'
+import { Route as authMyTeamIndexRouteImport } from './routes/(auth)/my-team/index'
+import { Route as authKycIndexRouteImport } from './routes/(auth)/kyc/index'
 
 const guestRouteRoute = guestRouteRouteImport.update({
   id: '/(guest)',
@@ -38,14 +40,28 @@ const guestLoginIndexRoute = guestLoginIndexRouteImport.update({
   path: '/login/',
   getParentRoute: () => guestRouteRoute,
 } as any)
+const authMyTeamIndexRoute = authMyTeamIndexRouteImport.update({
+  id: '/my-team/',
+  path: '/my-team/',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authKycIndexRoute = authKycIndexRouteImport.update({
+  id: '/kyc/',
+  path: '/kyc/',
+  getParentRoute: () => authRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof authIndexRoute
+  '/kyc/': typeof authKycIndexRoute
+  '/my-team/': typeof authMyTeamIndexRoute
   '/login/': typeof guestLoginIndexRoute
   '/signup/': typeof guestSignupIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authIndexRoute
+  '/kyc': typeof authKycIndexRoute
+  '/my-team': typeof authMyTeamIndexRoute
   '/login': typeof guestLoginIndexRoute
   '/signup': typeof guestSignupIndexRoute
 }
@@ -54,19 +70,23 @@ export interface FileRoutesById {
   '/(auth)': typeof authRouteRouteWithChildren
   '/(guest)': typeof guestRouteRouteWithChildren
   '/(auth)/': typeof authIndexRoute
+  '/(auth)/kyc/': typeof authKycIndexRoute
+  '/(auth)/my-team/': typeof authMyTeamIndexRoute
   '/(guest)/login/': typeof guestLoginIndexRoute
   '/(guest)/signup/': typeof guestSignupIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login/' | '/signup/'
+  fullPaths: '/' | '/kyc/' | '/my-team/' | '/login/' | '/signup/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup'
+  to: '/' | '/kyc' | '/my-team' | '/login' | '/signup'
   id:
     | '__root__'
     | '/(auth)'
     | '/(guest)'
     | '/(auth)/'
+    | '/(auth)/kyc/'
+    | '/(auth)/my-team/'
     | '/(guest)/login/'
     | '/(guest)/signup/'
   fileRoutesById: FileRoutesById
@@ -113,15 +133,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof guestLoginIndexRouteImport
       parentRoute: typeof guestRouteRoute
     }
+    '/(auth)/my-team/': {
+      id: '/(auth)/my-team/'
+      path: '/my-team'
+      fullPath: '/my-team/'
+      preLoaderRoute: typeof authMyTeamIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/kyc/': {
+      id: '/(auth)/kyc/'
+      path: '/kyc'
+      fullPath: '/kyc/'
+      preLoaderRoute: typeof authKycIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
   }
 }
 
 interface authRouteRouteChildren {
   authIndexRoute: typeof authIndexRoute
+  authKycIndexRoute: typeof authKycIndexRoute
+  authMyTeamIndexRoute: typeof authMyTeamIndexRoute
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
   authIndexRoute: authIndexRoute,
+  authKycIndexRoute: authKycIndexRoute,
+  authMyTeamIndexRoute: authMyTeamIndexRoute,
 }
 
 const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
