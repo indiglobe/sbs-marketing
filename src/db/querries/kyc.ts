@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, InferInsertModel } from "drizzle-orm";
 import { db } from "..";
 import { KYCTable } from "../schema";
 
@@ -12,4 +12,17 @@ export async function getKycDetailsForUser({ userid }: { userid: string }) {
   )[0];
 
   return data;
+}
+
+export async function updateKycDetails({
+  userid,
+  data,
+}: {
+  userid: string;
+  data: Partial<InferInsertModel<typeof KYCTable>>;
+}) {
+  await db
+    .update(KYCTable)
+    .set({ ...data })
+    .where(eq(KYCTable.detailsOf, userid));
 }

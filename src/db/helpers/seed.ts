@@ -78,6 +78,7 @@ import { generate_SBS_Id } from "@/utils/id";
       IFSC: faker.word.noun(5),
       PAN: faker.word.noun(10),
       branchName: faker.company.name(),
+      bankName: faker.company.name(),
       accountHolder: faker.company.name(),
       detailsOf:
         usersDetails[Math.floor(Math.random() * usersDetails.length)].id,

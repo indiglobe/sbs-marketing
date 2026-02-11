@@ -1,7 +1,8 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import toast from "react-hot-toast";
 import { cn } from "@/utils/cn";
-import { useLoaderData } from "@tanstack/react-router";
+import { useLoaderData, useNavigate } from "@tanstack/react-router";
+import { updateKycDetailsServerFn } from "@/server-functions/db-model/kyc";
 
 /* ---------- Types ---------- */
 
@@ -32,6 +33,7 @@ const initialValues: KycFormValues = {
 /* ---------- Component ---------- */
 
 export default function KycForm() {
+  const navigate = useNavigate();
   const { kycDetails } = useLoaderData({ from: "/(auth)/kyc/" });
 
   const [values, setValues] = useState<KycFormValues>({
@@ -67,7 +69,7 @@ export default function KycForm() {
     return newErrors;
   }
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const validationErrors = validate();
     setErrors(validationErrors);
@@ -81,10 +83,20 @@ export default function KycForm() {
       return;
     }
 
+    console.log(kycDetails.detailsOf);
+
+    await updateKycDetailsServerFn({
+      data: {
+        values: { ...values, detailsOf: kycDetails.detailsOf },
+        userid: kycDetails.detailsOf,
+      },
+    });
+
+    navigate({ to: "/" });
     // Submit logic
-    console.log("KYC DATA:", values);
+    // console.log("KYC DATA:", values);
     toast.success("KYC submitted successfully!");
-    setValues(initialValues);
+    // setValues(initialValues);
   }
 
   return (

@@ -28,7 +28,13 @@ function RouteComponent() {
         <Avatar />
       </div>
 
-      <UserTree />
+      <div
+        className={cn(
+          `border-brand-200 m-auto aspect-video w-full max-w-200 rounded-md border p-4`,
+        )}
+      >
+        <UserTree />
+      </div>
 
       <BottomSection />
     </main>

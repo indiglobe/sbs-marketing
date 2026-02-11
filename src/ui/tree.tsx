@@ -41,7 +41,7 @@ export default function Tree({
         nodes={nodes}
         edges={edges}
         // edgeTypes={edgeTypes}
-        // fitView
+        fitView
         //
       />
     </div>

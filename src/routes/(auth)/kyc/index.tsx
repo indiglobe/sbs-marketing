@@ -12,6 +12,8 @@ export const Route = createFileRoute("/(auth)/kyc/")({
       data: { userid: session?.userid! },
     });
 
+    console.log(kycDetails);
+
     return {
       kycDetails,
     };

@@ -1,5 +1,6 @@
 import Header from "@/components/header";
 import { fetchSession } from "@/utils/auth";
+import { cn } from "@/utils/cn";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(auth)")({
@@ -19,17 +20,19 @@ export const Route = createFileRoute("/(auth)")({
     return {
       userName: session?.fullName,
       userid: session?.userid,
+      role: session?.role,
     };
   },
 });
 
 function RouteComponent() {
-  const { userid } = Route.useLoaderData();
+  const { userid, role } = Route.useLoaderData();
 
   return (
     <>
-      <Header userid={userid!} />
+      <Header userid={userid!} role={role!} />
       <Outlet />
+      <div className={cn(`pb-40`)} />
     </>
   );
 }

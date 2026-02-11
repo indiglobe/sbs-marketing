@@ -18,8 +18,15 @@ import { Image } from "@unpic/react";
 import { LogoutActionPopupMessage } from "@/ui/popup-message";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/shadcn/popover";
 import { Avatar } from "@/ui/avatar";
+import { fetchSession } from "@/utils/auth";
 
-export function Navbar({ userid }: { userid: string }) {
+export function Navbar({
+  userid,
+  role,
+}: Pick<
+  NonNullable<Awaited<ReturnType<typeof fetchSession>>>,
+  "role" | "userid"
+>) {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
@@ -27,14 +34,14 @@ export function Navbar({ userid }: { userid: string }) {
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white md:h-12 md:w-12">
               <Image src="/logo512.png" alt="logo" layout="fullWidth" />
             </div>
             <span className="text-lg font-semibold tracking-tight text-gray-900">
               SBS Marketing
             </span>
-          </div>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden items-center md:flex">
@@ -52,12 +59,29 @@ export function Navbar({ userid }: { userid: string }) {
               My team
             </Link>
 
-            <Link
+            {role === "super-admin" && (
+              <Link
+                to="/manage"
+                className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
+              >
+                Manage
+              </Link>
+            )}
+
+            {/* <Link
               to="/"
               className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900"
             >
               Helpline
-            </Link>
+            </Link> */}
+
+            <HelplineModal
+              triggerButton={
+                <button className="rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-900">
+                  Helpline
+                </button>
+              }
+            />
 
             <ReferalModal
               userid={userid}
@@ -127,25 +151,42 @@ export function Navbar({ userid }: { userid: string }) {
       >
         <div className="space-y-2 px-4 py-4">
           <Link
-            to="/"
+            to="/kyc"
             className="block rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
           >
             KYC
           </Link>
 
           <Link
-            to="/"
+            to="/my-team"
             className="block rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
           >
             My team
           </Link>
 
-          <Link
-            to="/"
-            className="block rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+          {role === "super-admin" && (
+            <Link
+              to="/manage"
+              className="block rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+            >
+              Manage
+            </Link>
+          )}
+
+          <HelplineModal
+            triggerButton={
+              <button className="block w-full rounded-xl px-4 py-2 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100">
+                Helpline
+              </button>
+            }
           >
-            Helpline
-          </Link>
+            {/* <Link
+              to="/"
+              className="block rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+            >
+              Helpline
+            </Link> */}
+          </HelplineModal>
 
           {/* <button className="block rounded-xl px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100">
             Refer
@@ -276,6 +317,24 @@ export function ReferalModal({
                 <Copy className="size-5" />
               </span>
             </button>
+          </DialogHeader>
+        </DialogContent>
+      </div>
+    </Dialog>
+  );
+}
+
+export function HelplineModal({ triggerButton }: { triggerButton: ReactNode }) {
+  return (
+    <Dialog>
+      <div>
+        <DialogTrigger asChild>{triggerButton}</DialogTrigger>
+        <DialogContent className="border-green-500 sm:max-w-sm">
+          <DialogHeader className="text-left">
+            <DialogTitle>Our helpline no is:</DialogTitle>
+            <div>
+              <a href="tel:9876543210">9876543210</a>
+            </div>
           </DialogHeader>
         </DialogContent>
       </div>
