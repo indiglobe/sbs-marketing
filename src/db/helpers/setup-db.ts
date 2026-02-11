@@ -1,5 +1,4 @@
-// import { env } from "@/utils/env";
-import { env } from "@/integrations/env";
+import { env } from "@/lib/env";
 import mysql, { RowDataPacket } from "mysql2";
 
 const url = new URL(env.DATABASE_URL);

@@ -8,7 +8,6 @@ export default defineConfig({
     "db:push": { execute: "drizzle-kit push" },
     "db:pull": { execute: "drizzle-kit pull" },
     "db:setup": { execute: "tsx src/db/helpers/setup-db.ts" },
-    "db:seed": { execute: "tsx src/db/helpers/seed.ts" },
     "db:studio": { execute: "drizzle-kit studio" },
   },
 });

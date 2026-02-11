@@ -9,15 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as guestRouteRouteImport } from './routes/(guest)/route'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
-import { Route as authIndexRouteImport } from './routes/(auth)/index'
-import { Route as guestSignupIndexRouteImport } from './routes/(guest)/signup/index'
-import { Route as guestLoginIndexRouteImport } from './routes/(guest)/login/index'
-import { Route as authMyTeamIndexRouteImport } from './routes/(auth)/my-team/index'
-import { Route as authKycIndexRouteImport } from './routes/(auth)/kyc/index'
-import { Route as authsuperAdminManageIndexRouteImport } from './routes/(auth)/(super-admin)/manage/index'
+import { Route as publicIndexRouteImport } from './routes/(public)/index'
+import { Route as guestSigninIndexRouteImport } from './routes/(guest)/signin/index'
+import { Route as authDashboardIndexRouteImport } from './routes/(auth)/dashboard/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
+const publicRouteRoute = publicRouteRouteImport.update({
+  id: '/(public)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const guestRouteRoute = guestRouteRouteImport.update({
   id: '/(guest)',
   getParentRoute: () => rootRouteImport,
@@ -26,89 +29,81 @@ const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authIndexRoute = authIndexRouteImport.update({
+const publicIndexRoute = publicIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => authRouteRoute,
+  getParentRoute: () => publicRouteRoute,
 } as any)
-const guestSignupIndexRoute = guestSignupIndexRouteImport.update({
-  id: '/signup/',
-  path: '/signup/',
+const guestSigninIndexRoute = guestSigninIndexRouteImport.update({
+  id: '/signin/',
+  path: '/signin/',
   getParentRoute: () => guestRouteRoute,
 } as any)
-const guestLoginIndexRoute = guestLoginIndexRouteImport.update({
-  id: '/login/',
-  path: '/login/',
-  getParentRoute: () => guestRouteRoute,
-} as any)
-const authMyTeamIndexRoute = authMyTeamIndexRouteImport.update({
-  id: '/my-team/',
-  path: '/my-team/',
+const authDashboardIndexRoute = authDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => authRouteRoute,
 } as any)
-const authKycIndexRoute = authKycIndexRouteImport.update({
-  id: '/kyc/',
-  path: '/kyc/',
-  getParentRoute: () => authRouteRoute,
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const authsuperAdminManageIndexRoute =
-  authsuperAdminManageIndexRouteImport.update({
-    id: '/(super-admin)/manage/',
-    path: '/manage/',
-    getParentRoute: () => authRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof authIndexRoute
-  '/kyc/': typeof authKycIndexRoute
-  '/my-team/': typeof authMyTeamIndexRoute
-  '/login/': typeof guestLoginIndexRoute
-  '/signup/': typeof guestSignupIndexRoute
-  '/manage/': typeof authsuperAdminManageIndexRoute
+  '/': typeof publicIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard/': typeof authDashboardIndexRoute
+  '/signin/': typeof guestSigninIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof authIndexRoute
-  '/kyc': typeof authKycIndexRoute
-  '/my-team': typeof authMyTeamIndexRoute
-  '/login': typeof guestLoginIndexRoute
-  '/signup': typeof guestSignupIndexRoute
-  '/manage': typeof authsuperAdminManageIndexRoute
+  '/': typeof publicIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard': typeof authDashboardIndexRoute
+  '/signin': typeof guestSigninIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(auth)': typeof authRouteRouteWithChildren
   '/(guest)': typeof guestRouteRouteWithChildren
-  '/(auth)/': typeof authIndexRoute
-  '/(auth)/kyc/': typeof authKycIndexRoute
-  '/(auth)/my-team/': typeof authMyTeamIndexRoute
-  '/(guest)/login/': typeof guestLoginIndexRoute
-  '/(guest)/signup/': typeof guestSignupIndexRoute
-  '/(auth)/(super-admin)/manage/': typeof authsuperAdminManageIndexRoute
+  '/(public)': typeof publicRouteRouteWithChildren
+  '/(public)/': typeof publicIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/(auth)/dashboard/': typeof authDashboardIndexRoute
+  '/(guest)/signin/': typeof guestSigninIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/kyc/' | '/my-team/' | '/login/' | '/signup/' | '/manage/'
+  fullPaths: '/' | '/api/auth/$' | '/dashboard/' | '/signin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/kyc' | '/my-team' | '/login' | '/signup' | '/manage'
+  to: '/' | '/api/auth/$' | '/dashboard' | '/signin'
   id:
     | '__root__'
     | '/(auth)'
     | '/(guest)'
-    | '/(auth)/'
-    | '/(auth)/kyc/'
-    | '/(auth)/my-team/'
-    | '/(guest)/login/'
-    | '/(guest)/signup/'
-    | '/(auth)/(super-admin)/manage/'
+    | '/(public)'
+    | '/(public)/'
+    | '/api/auth/$'
+    | '/(auth)/dashboard/'
+    | '/(guest)/signin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   authRouteRoute: typeof authRouteRouteWithChildren
   guestRouteRoute: typeof guestRouteRouteWithChildren
+  publicRouteRoute: typeof publicRouteRouteWithChildren
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/(public)': {
+      id: '/(public)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof publicRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(guest)': {
       id: '/(guest)'
       path: ''
@@ -123,63 +118,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(auth)/': {
-      id: '/(auth)/'
+    '/(public)/': {
+      id: '/(public)/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof authIndexRouteImport
-      parentRoute: typeof authRouteRoute
+      preLoaderRoute: typeof publicIndexRouteImport
+      parentRoute: typeof publicRouteRoute
     }
-    '/(guest)/signup/': {
-      id: '/(guest)/signup/'
-      path: '/signup'
-      fullPath: '/signup/'
-      preLoaderRoute: typeof guestSignupIndexRouteImport
+    '/(guest)/signin/': {
+      id: '/(guest)/signin/'
+      path: '/signin'
+      fullPath: '/signin/'
+      preLoaderRoute: typeof guestSigninIndexRouteImport
       parentRoute: typeof guestRouteRoute
     }
-    '/(guest)/login/': {
-      id: '/(guest)/login/'
-      path: '/login'
-      fullPath: '/login/'
-      preLoaderRoute: typeof guestLoginIndexRouteImport
-      parentRoute: typeof guestRouteRoute
-    }
-    '/(auth)/my-team/': {
-      id: '/(auth)/my-team/'
-      path: '/my-team'
-      fullPath: '/my-team/'
-      preLoaderRoute: typeof authMyTeamIndexRouteImport
+    '/(auth)/dashboard/': {
+      id: '/(auth)/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof authDashboardIndexRouteImport
       parentRoute: typeof authRouteRoute
     }
-    '/(auth)/kyc/': {
-      id: '/(auth)/kyc/'
-      path: '/kyc'
-      fullPath: '/kyc/'
-      preLoaderRoute: typeof authKycIndexRouteImport
-      parentRoute: typeof authRouteRoute
-    }
-    '/(auth)/(super-admin)/manage/': {
-      id: '/(auth)/(super-admin)/manage/'
-      path: '/manage'
-      fullPath: '/manage/'
-      preLoaderRoute: typeof authsuperAdminManageIndexRouteImport
-      parentRoute: typeof authRouteRoute
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
 interface authRouteRouteChildren {
-  authIndexRoute: typeof authIndexRoute
-  authKycIndexRoute: typeof authKycIndexRoute
-  authMyTeamIndexRoute: typeof authMyTeamIndexRoute
-  authsuperAdminManageIndexRoute: typeof authsuperAdminManageIndexRoute
+  authDashboardIndexRoute: typeof authDashboardIndexRoute
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
-  authIndexRoute: authIndexRoute,
-  authKycIndexRoute: authKycIndexRoute,
-  authMyTeamIndexRoute: authMyTeamIndexRoute,
-  authsuperAdminManageIndexRoute: authsuperAdminManageIndexRoute,
+  authDashboardIndexRoute: authDashboardIndexRoute,
 }
 
 const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
@@ -187,22 +162,34 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 )
 
 interface guestRouteRouteChildren {
-  guestLoginIndexRoute: typeof guestLoginIndexRoute
-  guestSignupIndexRoute: typeof guestSignupIndexRoute
+  guestSigninIndexRoute: typeof guestSigninIndexRoute
 }
 
 const guestRouteRouteChildren: guestRouteRouteChildren = {
-  guestLoginIndexRoute: guestLoginIndexRoute,
-  guestSignupIndexRoute: guestSignupIndexRoute,
+  guestSigninIndexRoute: guestSigninIndexRoute,
 }
 
 const guestRouteRouteWithChildren = guestRouteRoute._addFileChildren(
   guestRouteRouteChildren,
 )
 
+interface publicRouteRouteChildren {
+  publicIndexRoute: typeof publicIndexRoute
+}
+
+const publicRouteRouteChildren: publicRouteRouteChildren = {
+  publicIndexRoute: publicIndexRoute,
+}
+
+const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(
+  publicRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   authRouteRoute: authRouteRouteWithChildren,
   guestRouteRoute: guestRouteRouteWithChildren,
+  publicRouteRoute: publicRouteRouteWithChildren,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

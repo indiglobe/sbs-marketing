@@ -6,8 +6,10 @@ import {
 import { DevTools } from "../integrations/tanstack/devtools";
 import appCss from "../styles/styles.css?url";
 import type { QueryClient } from "@tanstack/react-query";
-import { Toaster } from "react-hot-toast";
+import { ThemeProvider } from "@/integrations/theme/theme-provider";
 import { cn } from "@/utils/cn";
+import { RootNotFound } from "@/components/root-not-found";
+import { RootError } from "@/components/root-error";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -27,30 +29,19 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         title: "SBS Marketing",
       },
     ],
-    scripts: [],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
-      },
-      {
-        rel: "preconnect",
-        href: "https://fonts.googleapis.com",
-      },
-      {
-        rel: "preconnect",
-        href: "https://fonts.gstatic.com",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
       },
     ],
   }),
 
   shellComponent: RootDocument,
 
-  notFoundComponent: () => <></>,
+  notFoundComponent: RootNotFound,
+
+  errorComponent: RootError,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -59,12 +50,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className={cn(`flex min-h-svh flex-col`)}>
-        {children}
-
-        <Toaster position="bottom-right" />
-        {/* <ThemeProvider> */}
-        {/* </ThemeProvider> */}
+      <body className={cn(`flex max-w-svw flex-col`)}>
+        <ThemeProvider>{children}</ThemeProvider>
         <DevTools />
         <Scripts />
       </body>

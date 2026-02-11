@@ -1,15 +1,20 @@
-import { fetchSession } from "@/utils/auth";
+import { fetchSession } from "@/lib/auth/session";
+import { guestMiddleware } from "@/middleware/guest";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(guest)")({
   component: RouteComponent,
 
   beforeLoad: async () => {
-    const isValidUser = await fetchSession();
+    const session = await fetchSession();
 
-    if (isValidUser) {
-      throw redirect({ to: "/" });
+    if (session) {
+      throw redirect({ to: "/dashboard" });
     }
+  },
+
+  server: {
+    middleware: [guestMiddleware],
   },
 });
 

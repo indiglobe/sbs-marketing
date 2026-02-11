@@ -1,6 +1,9 @@
 import type { Preview } from "@storybook/react-vite";
 import { INITIAL_VIEWPORTS } from "storybook/viewport";
-import { TypedGlobalPreview, Viewports } from "../src/lib/storybook/sb.types";
+import {
+  TypedGlobalPreview,
+  Viewports,
+} from "../src/integrations/storybook/sb.types";
 import { RouterDecorator } from "./decorator";
 import "./sb.css";
 
