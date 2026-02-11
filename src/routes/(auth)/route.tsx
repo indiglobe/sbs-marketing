@@ -2,6 +2,7 @@ import { fetchSession } from "@/lib/auth/session";
 import { authMiddleware } from "@/middleware/auth";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { SigninSearchParams } from "../(guest)/signin";
+import Navbar from "@/components/navabr";
 
 export const Route = createFileRoute("/(auth)")({
   component: RouteComponent,
@@ -22,11 +23,18 @@ export const Route = createFileRoute("/(auth)")({
   server: {
     middleware: [authMiddleware],
   },
+
+  loader: async () => {
+    const session = await fetchSession();
+
+    return { session };
+  },
 });
 
 function RouteComponent() {
   return (
     <>
+      <Navbar />
       <Outlet />
     </>
   );
