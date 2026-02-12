@@ -10,19 +10,17 @@ import {
 } from "@/ui/shadcn/dialog";
 import { useLoaderData } from "@tanstack/react-router";
 
-export function ReferDialog() {
+export function HelpLineDialog() {
   const { userid } = useLoaderData({ from: "/(auth)" });
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost">Refer</Button>
+        <Button variant="ghost">Help</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Refer to your friend</DialogTitle>
-          <DialogDescription>
-            Refer to your friend and earn a badge.
-          </DialogDescription>
+          <DialogTitle>Helpline</DialogTitle>
+          <DialogDescription>If you want help from our side.</DialogDescription>
         </DialogHeader>
 
         <div>{userid}</div>

@@ -1,9 +1,9 @@
-import Signin from "@/components/signin";
+import Signin from "@/ui/signin";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 export const signinSearchParams = z.object({
-  callbackUrl: z.string().catch(""),
+  callbackUrl: z.string().catch("").optional(),
 });
 
 export type SigninSearchParams = z.infer<typeof signinSearchParams>;

@@ -5,7 +5,11 @@ import { cn } from "@/utils/cn";
 
 export default function Navbar() {
   return (
-    <nav className={cn(`flex w-full items-center justify-between`)}>
+    <nav
+      className={cn(
+        `flex w-full items-center justify-between bg-blue-400 dark:bg-blue-900`,
+      )}
+    >
       <div>
         <Logo />
       </div>

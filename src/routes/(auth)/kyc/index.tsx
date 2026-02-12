@@ -1,9 +1,10 @@
+import { KYCForm } from "@/ui/kyc-form";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(public)/")({
+export const Route = createFileRoute("/(auth)/kyc/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <>Hello "/(public)/"!</>;
+  return <KYCForm />;
 }

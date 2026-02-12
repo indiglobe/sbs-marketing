@@ -6,7 +6,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@layer base {
+/* @layer base {
   :root {
     --background: #ececec;
     --foreground: #1a1a1a;
@@ -32,7 +32,7 @@
   --color-brand-800: var(--color-indigo-800);
   --color-brand-900: var(--color-indigo-900);
   --color-brand-950: var(--color-indigo-950);
-}
+} */
 
 @layer base {
   body {

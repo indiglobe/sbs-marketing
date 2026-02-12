@@ -1,4 +1,4 @@
-import { useLoaderData } from "@tanstack/react-router";
+import { useLoaderData, useNavigate } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "./shadcn/avatar";
 import { Button } from "./shadcn/button";
 import {
@@ -9,9 +9,11 @@ import {
   PopoverTrigger,
 } from "./shadcn/popover";
 import { cn } from "@/utils/cn";
+import { authClient } from "@/lib/auth/auth-client";
 
 export function AvatarPopover() {
   const { session } = useLoaderData({ from: "/(auth)" });
+  const navigate = useNavigate();
 
   if (!session) return null;
 
@@ -20,7 +22,12 @@ export function AvatarPopover() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          className={cn(
+            `dark:bg-background dark:hover:bg-background border-none p-0`,
+          )}
+        >
           <UserAvatar />
         </Button>
       </PopoverTrigger>
@@ -28,7 +35,15 @@ export function AvatarPopover() {
         <PopoverHeader>
           <PopoverTitle>{user.name}</PopoverTitle>
           <div className={cn(`mt-4`)}>
-            <Button variant={"destructive"}>Sign out</Button>
+            <Button
+              onClick={async () => {
+                await authClient.signOut();
+                navigate({ to: "/" });
+              }}
+              variant={"destructive"}
+            >
+              Sign out
+            </Button>
           </div>
         </PopoverHeader>
       </PopoverContent>
