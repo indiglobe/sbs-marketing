@@ -8,10 +8,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/ui/shadcn/dialog";
-import { useLoaderData } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 
 export function ReferDialog() {
-  const { userid } = useLoaderData({ from: "/(auth)" });
+  // const { userid } = useLoaderData({ from: "/(auth)" });
+  const { userDetails } = useRouteContext({ from: "/(auth)" });
+
+  if (!userDetails) return null;
+
+  const { id: userid } = userDetails;
+
   return (
     <Dialog>
       <DialogTrigger asChild>

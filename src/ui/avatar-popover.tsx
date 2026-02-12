@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "./shadcn/avatar";
 import { Button } from "./shadcn/button";
 import {
@@ -12,12 +12,10 @@ import { cn } from "@/utils/cn";
 import { authClient } from "@/lib/auth/auth-client";
 
 export function AvatarPopover() {
-  const { session } = useLoaderData({ from: "/(auth)" });
+  const {
+    session: { user },
+  } = useRouteContext({ from: "/(auth)" });
   const navigate = useNavigate();
-
-  if (!session) return null;
-
-  const { user } = session;
 
   return (
     <Popover>
@@ -52,11 +50,9 @@ export function AvatarPopover() {
 }
 
 export function UserAvatar() {
-  const { session } = useLoaderData({ from: "/(auth)" });
-
-  if (!session) return null;
-
-  const { user } = session;
+  const {
+    session: { user },
+  } = useRouteContext({ from: "/(auth)" });
 
   return (
     <Avatar>

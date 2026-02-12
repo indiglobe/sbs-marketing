@@ -4,6 +4,7 @@ import { z } from "zod";
 
 export const signinSearchParams = z.object({
   callbackUrl: z.string().catch("").optional(),
+  referrer: z.string().catch("").optional(),
 });
 
 export type SigninSearchParams = z.infer<typeof signinSearchParams>;

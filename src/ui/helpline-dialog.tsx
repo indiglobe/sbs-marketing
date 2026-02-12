@@ -1,3 +1,4 @@
+import { AppRouterContext } from "@/router";
 import { Button } from "@/ui/shadcn/button";
 import {
   Dialog,
@@ -8,10 +9,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/ui/shadcn/dialog";
-import { useLoaderData } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
 
 export function HelpLineDialog() {
-  const { userid } = useLoaderData({ from: "/(auth)" });
+  const { userDetails }: AppRouterContext = useRouteContext({
+    from: "/(auth)",
+  });
+
+  if (!userDetails) return null;
+
+  const { id: userid } = userDetails;
+
   return (
     <Dialog>
       <DialogTrigger asChild>

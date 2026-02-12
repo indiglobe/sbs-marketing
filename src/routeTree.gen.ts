@@ -13,9 +13,15 @@ import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as guestRouteRouteImport } from './routes/(guest)/route'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
+import { Route as authnewUserRouteRouteImport } from './routes/(auth)/(new-user)/route'
+import { Route as authexistingUserRouteRouteImport } from './routes/(auth)/(existing-user)/route'
 import { Route as guestSigninIndexRouteImport } from './routes/(guest)/signin/index'
-import { Route as authDashboardIndexRouteImport } from './routes/(auth)/dashboard/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as authexistingUseradminRouteRouteImport } from './routes/(auth)/(existing-user)/(admin)/route'
+import { Route as authnewUserWelcomeIndexRouteImport } from './routes/(auth)/(new-user)/welcome/index'
+import { Route as authexistingUserKycIndexRouteImport } from './routes/(auth)/(existing-user)/kyc/index'
+import { Route as authexistingUserDashboardIndexRouteImport } from './routes/(auth)/(existing-user)/dashboard/index'
+import { Route as authexistingUseradminManageIndexRouteImport } from './routes/(auth)/(existing-user)/(admin)/manage/index'
 
 const publicRouteRoute = publicRouteRouteImport.update({
   id: '/(public)',
@@ -34,58 +40,121 @@ const publicIndexRoute = publicIndexRouteImport.update({
   path: '/',
   getParentRoute: () => publicRouteRoute,
 } as any)
+const authnewUserRouteRoute = authnewUserRouteRouteImport.update({
+  id: '/(new-user)',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authexistingUserRouteRoute = authexistingUserRouteRouteImport.update({
+  id: '/(existing-user)',
+  getParentRoute: () => authRouteRoute,
+} as any)
 const guestSigninIndexRoute = guestSigninIndexRouteImport.update({
   id: '/signin/',
   path: '/signin/',
   getParentRoute: () => guestRouteRoute,
-} as any)
-const authDashboardIndexRoute = authDashboardIndexRouteImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
-  getParentRoute: () => authRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authexistingUseradminRouteRoute =
+  authexistingUseradminRouteRouteImport.update({
+    id: '/(admin)',
+    getParentRoute: () => authexistingUserRouteRoute,
+  } as any)
+const authnewUserWelcomeIndexRoute = authnewUserWelcomeIndexRouteImport.update({
+  id: '/welcome/',
+  path: '/welcome/',
+  getParentRoute: () => authnewUserRouteRoute,
+} as any)
+const authexistingUserKycIndexRoute =
+  authexistingUserKycIndexRouteImport.update({
+    id: '/kyc/',
+    path: '/kyc/',
+    getParentRoute: () => authexistingUserRouteRoute,
+  } as any)
+const authexistingUserDashboardIndexRoute =
+  authexistingUserDashboardIndexRouteImport.update({
+    id: '/dashboard/',
+    path: '/dashboard/',
+    getParentRoute: () => authexistingUserRouteRoute,
+  } as any)
+const authexistingUseradminManageIndexRoute =
+  authexistingUseradminManageIndexRouteImport.update({
+    id: '/manage/',
+    path: '/manage/',
+    getParentRoute: () => authexistingUseradminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof publicIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/dashboard/': typeof authDashboardIndexRoute
   '/signin/': typeof guestSigninIndexRoute
+  '/dashboard/': typeof authexistingUserDashboardIndexRoute
+  '/kyc/': typeof authexistingUserKycIndexRoute
+  '/welcome/': typeof authnewUserWelcomeIndexRoute
+  '/manage/': typeof authexistingUseradminManageIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof publicIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/dashboard': typeof authDashboardIndexRoute
   '/signin': typeof guestSigninIndexRoute
+  '/dashboard': typeof authexistingUserDashboardIndexRoute
+  '/kyc': typeof authexistingUserKycIndexRoute
+  '/welcome': typeof authnewUserWelcomeIndexRoute
+  '/manage': typeof authexistingUseradminManageIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(auth)': typeof authRouteRouteWithChildren
   '/(guest)': typeof guestRouteRouteWithChildren
   '/(public)': typeof publicRouteRouteWithChildren
+  '/(auth)/(existing-user)': typeof authexistingUserRouteRouteWithChildren
+  '/(auth)/(new-user)': typeof authnewUserRouteRouteWithChildren
   '/(public)/': typeof publicIndexRoute
+  '/(auth)/(existing-user)/(admin)': typeof authexistingUseradminRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/(auth)/dashboard/': typeof authDashboardIndexRoute
   '/(guest)/signin/': typeof guestSigninIndexRoute
+  '/(auth)/(existing-user)/dashboard/': typeof authexistingUserDashboardIndexRoute
+  '/(auth)/(existing-user)/kyc/': typeof authexistingUserKycIndexRoute
+  '/(auth)/(new-user)/welcome/': typeof authnewUserWelcomeIndexRoute
+  '/(auth)/(existing-user)/(admin)/manage/': typeof authexistingUseradminManageIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/auth/$' | '/dashboard/' | '/signin/'
+  fullPaths:
+    | '/'
+    | '/api/auth/$'
+    | '/signin/'
+    | '/dashboard/'
+    | '/kyc/'
+    | '/welcome/'
+    | '/manage/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/auth/$' | '/dashboard' | '/signin'
+  to:
+    | '/'
+    | '/api/auth/$'
+    | '/signin'
+    | '/dashboard'
+    | '/kyc'
+    | '/welcome'
+    | '/manage'
   id:
     | '__root__'
     | '/(auth)'
     | '/(guest)'
     | '/(public)'
+    | '/(auth)/(existing-user)'
+    | '/(auth)/(new-user)'
     | '/(public)/'
+    | '/(auth)/(existing-user)/(admin)'
     | '/api/auth/$'
-    | '/(auth)/dashboard/'
     | '/(guest)/signin/'
+    | '/(auth)/(existing-user)/dashboard/'
+    | '/(auth)/(existing-user)/kyc/'
+    | '/(auth)/(new-user)/welcome/'
+    | '/(auth)/(existing-user)/(admin)/manage/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -125,19 +194,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicIndexRouteImport
       parentRoute: typeof publicRouteRoute
     }
+    '/(auth)/(new-user)': {
+      id: '/(auth)/(new-user)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authnewUserRouteRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/(existing-user)': {
+      id: '/(auth)/(existing-user)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authexistingUserRouteRouteImport
+      parentRoute: typeof authRouteRoute
+    }
     '/(guest)/signin/': {
       id: '/(guest)/signin/'
       path: '/signin'
       fullPath: '/signin/'
       preLoaderRoute: typeof guestSigninIndexRouteImport
       parentRoute: typeof guestRouteRoute
-    }
-    '/(auth)/dashboard/': {
-      id: '/(auth)/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof authDashboardIndexRouteImport
-      parentRoute: typeof authRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -146,15 +222,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(auth)/(existing-user)/(admin)': {
+      id: '/(auth)/(existing-user)/(admin)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authexistingUseradminRouteRouteImport
+      parentRoute: typeof authexistingUserRouteRoute
+    }
+    '/(auth)/(new-user)/welcome/': {
+      id: '/(auth)/(new-user)/welcome/'
+      path: '/welcome'
+      fullPath: '/welcome/'
+      preLoaderRoute: typeof authnewUserWelcomeIndexRouteImport
+      parentRoute: typeof authnewUserRouteRoute
+    }
+    '/(auth)/(existing-user)/kyc/': {
+      id: '/(auth)/(existing-user)/kyc/'
+      path: '/kyc'
+      fullPath: '/kyc/'
+      preLoaderRoute: typeof authexistingUserKycIndexRouteImport
+      parentRoute: typeof authexistingUserRouteRoute
+    }
+    '/(auth)/(existing-user)/dashboard/': {
+      id: '/(auth)/(existing-user)/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof authexistingUserDashboardIndexRouteImport
+      parentRoute: typeof authexistingUserRouteRoute
+    }
+    '/(auth)/(existing-user)/(admin)/manage/': {
+      id: '/(auth)/(existing-user)/(admin)/manage/'
+      path: '/manage'
+      fullPath: '/manage/'
+      preLoaderRoute: typeof authexistingUseradminManageIndexRouteImport
+      parentRoute: typeof authexistingUseradminRouteRoute
+    }
   }
 }
 
+interface authexistingUseradminRouteRouteChildren {
+  authexistingUseradminManageIndexRoute: typeof authexistingUseradminManageIndexRoute
+}
+
+const authexistingUseradminRouteRouteChildren: authexistingUseradminRouteRouteChildren =
+  {
+    authexistingUseradminManageIndexRoute:
+      authexistingUseradminManageIndexRoute,
+  }
+
+const authexistingUseradminRouteRouteWithChildren =
+  authexistingUseradminRouteRoute._addFileChildren(
+    authexistingUseradminRouteRouteChildren,
+  )
+
+interface authexistingUserRouteRouteChildren {
+  authexistingUseradminRouteRoute: typeof authexistingUseradminRouteRouteWithChildren
+  authexistingUserDashboardIndexRoute: typeof authexistingUserDashboardIndexRoute
+  authexistingUserKycIndexRoute: typeof authexistingUserKycIndexRoute
+}
+
+const authexistingUserRouteRouteChildren: authexistingUserRouteRouteChildren = {
+  authexistingUseradminRouteRoute: authexistingUseradminRouteRouteWithChildren,
+  authexistingUserDashboardIndexRoute: authexistingUserDashboardIndexRoute,
+  authexistingUserKycIndexRoute: authexistingUserKycIndexRoute,
+}
+
+const authexistingUserRouteRouteWithChildren =
+  authexistingUserRouteRoute._addFileChildren(
+    authexistingUserRouteRouteChildren,
+  )
+
+interface authnewUserRouteRouteChildren {
+  authnewUserWelcomeIndexRoute: typeof authnewUserWelcomeIndexRoute
+}
+
+const authnewUserRouteRouteChildren: authnewUserRouteRouteChildren = {
+  authnewUserWelcomeIndexRoute: authnewUserWelcomeIndexRoute,
+}
+
+const authnewUserRouteRouteWithChildren =
+  authnewUserRouteRoute._addFileChildren(authnewUserRouteRouteChildren)
+
 interface authRouteRouteChildren {
-  authDashboardIndexRoute: typeof authDashboardIndexRoute
+  authexistingUserRouteRoute: typeof authexistingUserRouteRouteWithChildren
+  authnewUserRouteRoute: typeof authnewUserRouteRouteWithChildren
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
-  authDashboardIndexRoute: authDashboardIndexRoute,
+  authexistingUserRouteRoute: authexistingUserRouteRouteWithChildren,
+  authnewUserRouteRoute: authnewUserRouteRouteWithChildren,
 }
 
 const authRouteRouteWithChildren = authRouteRoute._addFileChildren(

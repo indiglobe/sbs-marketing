@@ -14,20 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/ui/shadcn/card";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/ui/shadcn/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/ui/shadcn/field";
 import { Input } from "@/ui/shadcn/input";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/ui/shadcn/input-group";
+import { upsertKycDetails } from "@/integrations/server-function/db-querry/kyc";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 
 const kycFormSchema = z.object({
   aadhar: z
@@ -48,6 +38,11 @@ const kycFormSchema = z.object({
 export type KycFormSchema = z.infer<typeof kycFormSchema>;
 
 export function KYCForm() {
+  const { userDetails } = useRouteContext({ from: "/(auth)" });
+  const { kycDetails } = useLoaderData({
+    from: "/(auth)/(existing-user)/kyc/",
+  });
+
   const form = useForm({
     defaultValues: {
       aadhar: "",
@@ -57,6 +52,7 @@ export function KYCForm() {
       branchName: "",
       ifsc: "",
       pan: "",
+      ...kycDetails,
     } satisfies KycFormSchema,
     validators: {
       onSubmit: kycFormSchema,
@@ -76,6 +72,11 @@ export function KYCForm() {
           "--border-radius": "calc(var(--radius)  + 4px)",
         } as React.CSSProperties,
       });
+
+      if (!userDetails) return;
+
+      const { email } = userDetails;
+      await upsertKycDetails({ data: { email, kycDetails: value } });
     },
   });
 
@@ -231,7 +232,9 @@ export function KYCForm() {
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Bank Branch:</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>
+                      Account holder name:
+                    </FieldLabel>
                     <Input
                       id={field.name}
                       name={field.name}
@@ -239,7 +242,33 @@ export function KYCForm() {
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       aria-invalid={isInvalid}
-                      placeholder="Account holder name."
+                      placeholder="Provide account holder name."
+                      autoComplete="off"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            />
+
+            <form.Field
+              name="ifsc"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>IFSC code:</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="Provide account IFSC code."
                       autoComplete="off"
                     />
                     {isInvalid && (

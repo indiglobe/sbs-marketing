@@ -16,7 +16,7 @@ import {
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/ui/shadcn/field";
 import { Input } from "@/ui/shadcn/input";
 import { cn } from "@/utils/cn";
-import { useLoaderData, useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { insertUserDetails } from "@/integrations/server-function/db-querry/users";
 
 const welcomeFormSchema = z.object({
@@ -38,7 +38,11 @@ const welcomeFormSchema = z.object({
 export type WelcomeFormSchema = z.infer<typeof welcomeFormSchema>;
 
 export function WelcomeForm() {
-  const { email, name } = useLoaderData({ from: "/(auth)/welcome/" });
+  const {
+    session: {
+      user: { name, email },
+    },
+  } = useRouteContext({ from: "/(auth)" });
   const navigate = useNavigate();
 
   const form = useForm({

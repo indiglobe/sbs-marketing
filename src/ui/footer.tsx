@@ -8,7 +8,7 @@ export default function Footer() {
         `fixed bottom-0 left-0 w-full bg-blue-300 dark:bg-blue-900`,
       )}
     >
-      <ReferDialog />
+      {/* <ReferDialog /> */}
     </footer>
   );
 }

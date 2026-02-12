@@ -2,10 +2,11 @@ import { fetchSession } from "@/lib/auth/session";
 import { authMiddleware } from "@/middleware/auth";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { SigninSearchParams } from "../(guest)/signin";
-import Navbar from "@/ui/navabr";
-import { getUserDetails } from "@/integrations/server-function/db-querry/users";
+import Navbar from "@/ui/navbar";
 import Footer from "@/ui/footer";
 import { cn } from "@/utils/cn";
+import { BeforeLoadRouterContext } from "@/router";
+import { getUserDetails } from "@/integrations/server-function/db-querry/users";
 
 export const Route = createFileRoute("/(auth)")({
   component: RouteComponent,
@@ -21,26 +22,18 @@ export const Route = createFileRoute("/(auth)")({
         } satisfies SigninSearchParams,
       });
     }
+
+    const {
+      user: { email },
+    } = session;
+
+    const userDetails = await getUserDetails({ data: { email } });
+
+    return { session, userDetails } satisfies BeforeLoadRouterContext;
   },
 
   server: {
     middleware: [authMiddleware],
-  },
-
-  loader: async () => {
-    const session = await fetchSession();
-
-    if (!session) throw new Error();
-
-    const userDetails = await getUserDetails({
-      data: { email: session.user.email },
-    });
-
-    if (!userDetails) throw new Error();
-
-    const { id, role } = userDetails;
-
-    return { session, role, userid: id };
   },
 });
 

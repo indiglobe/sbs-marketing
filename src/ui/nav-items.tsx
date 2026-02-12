@@ -1,5 +1,6 @@
 "use client";
 
+import { AppRouterContext } from "@/router";
 import { HelpLineDialog } from "./helpline-dialog";
 import { ReferDialog } from "./refer-dialog";
 import {
@@ -9,10 +10,16 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "./shadcn/navigation-menu";
-import { Link, useLoaderData } from "@tanstack/react-router";
+import { Link, useRouteContext } from "@tanstack/react-router";
 
 export function NavigationItemsList() {
-  const { role } = useLoaderData({ from: "/(auth)" });
+  const context: AppRouterContext = useRouteContext({ from: "/(auth)" });
+
+  if (!context.userDetails) return null;
+
+  const {
+    userDetails: { role },
+  } = context;
 
   return (
     <NavigationMenu>
