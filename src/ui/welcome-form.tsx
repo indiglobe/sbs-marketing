@@ -33,6 +33,11 @@ const welcomeFormSchema = z.object({
     .string()
     .min(10, "Phone no cannot be less than 10 character.")
     .max(10, "Phone no cannot be more than 10 character."),
+  referrer: z
+    .string()
+    .min(8, "Referrer must be 8 character.")
+    .max(8, "Referrer must be 8 character.")
+    .optional(),
 });
 
 export type WelcomeFormSchema = z.infer<typeof welcomeFormSchema>;
@@ -51,6 +56,7 @@ export function WelcomeForm() {
       email,
       city: "",
       phone: "",
+      referrer: undefined,
     } satisfies WelcomeFormSchema,
     validators: {
       onSubmit: welcomeFormSchema,
@@ -71,9 +77,9 @@ export function WelcomeForm() {
         } as React.CSSProperties,
       });
 
-      const { city, email, name, phone } = value;
+      const { city, email, name, phone, referrer } = value;
 
-      await insertUserDetails({ data: { city, email, name, phone } });
+      await insertUserDetails({ data: { city, email, name, phone, referrer } });
 
       navigate({ to: "/dashboard" });
     },
@@ -189,6 +195,31 @@ export function WelcomeForm() {
                         onChange={(e) => field.handleChange(e.target.value)}
                         aria-invalid={isInvalid}
                         placeholder="Your phone"
+                        autoComplete="off"
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+              <form.Field
+                name="referrer"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>Referrer id:</FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        aria-invalid={isInvalid}
+                        placeholder="Referrer id"
                         autoComplete="off"
                       />
                       {isInvalid && (

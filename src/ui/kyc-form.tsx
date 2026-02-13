@@ -17,7 +17,11 @@ import {
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/ui/shadcn/field";
 import { Input } from "@/ui/shadcn/input";
 import { upsertKycDetails } from "@/integrations/server-function/db-querry/kyc";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import {
+  useLoaderData,
+  useNavigate,
+  useRouteContext,
+} from "@tanstack/react-router";
 
 const kycFormSchema = z.object({
   aadhar: z
@@ -38,22 +42,29 @@ const kycFormSchema = z.object({
 export type KycFormSchema = z.infer<typeof kycFormSchema>;
 
 export function KYCForm() {
+  const navigate = useNavigate();
   const { userDetails } = useRouteContext({ from: "/(auth)" });
   const { kycDetails } = useLoaderData({
     from: "/(auth)/(existing-user)/kyc/",
   });
 
+  let defaultValues = {
+    aadhar: "",
+    accountHolderName: "",
+    bankAccount: "",
+    bankName: "",
+    branchName: "",
+    ifsc: "",
+    pan: "",
+  } satisfies KycFormSchema;
+
+  if (kycDetails) {
+    const { id, kycOfUserEmail, ...acceptedKycDetails } = kycDetails;
+    defaultValues = { ...defaultValues, ...acceptedKycDetails };
+  }
+
   const form = useForm({
-    defaultValues: {
-      aadhar: "",
-      accountHolderName: "",
-      bankAccount: "",
-      bankName: "",
-      branchName: "",
-      ifsc: "",
-      pan: "",
-      ...kycDetails,
-    } satisfies KycFormSchema,
+    defaultValues,
     validators: {
       onSubmit: kycFormSchema,
     },
@@ -77,6 +88,8 @@ export function KYCForm() {
 
       const { email } = userDetails;
       await upsertKycDetails({ data: { email, kycDetails: value } });
+
+      navigate({ to: "/dashboard" });
     },
   });
 

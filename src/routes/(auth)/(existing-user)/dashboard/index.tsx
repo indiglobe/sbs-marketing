@@ -1,4 +1,5 @@
 import { checkUserMiddleware } from "@/middleware/check-user";
+import ReferralTree from "@/ui/tree";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(auth)/(existing-user)/dashboard/")({
@@ -16,5 +17,9 @@ export const Route = createFileRoute("/(auth)/(existing-user)/dashboard/")({
 });
 
 function RouteComponent() {
-  return <div>Hello "/(auth)/dashboard/"!</div>;
+  return (
+    <>
+      <ReferralTree />
+    </>
+  );
 }

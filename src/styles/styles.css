@@ -46,4 +46,8 @@
   button {
     @apply cursor-pointer;
   }
+
+  .react-flow__panel.react-flow__attribution.bottom.right {
+    display: none;
+  }
 }

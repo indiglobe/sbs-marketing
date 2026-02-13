@@ -18,8 +18,8 @@ export function KycTable({ ...props }: ComponentProps<typeof Table>) {
     <Table {...props}>
       <TableHeader>
         <TableRow>
-          <TableHead className="font-medium">{"Aadhar No."}</TableHead>
           <TableHead className="font-medium">{"Account Holder Name"}</TableHead>
+          <TableHead className="font-medium">{"Aadhar No."}</TableHead>
           <TableHead className="font-medium">{"Bank Account"}</TableHead>
           <TableHead className="font-medium">{"Bank Name"}</TableHead>
           <TableHead className="font-medium">{"Branch Name"}</TableHead>
@@ -40,8 +40,8 @@ export function KycTable({ ...props }: ComponentProps<typeof Table>) {
             pan,
           }) => (
             <TableRow key={id}>
-              <TableCell className="font-medium">{aadhar}</TableCell>
               <TableCell className="font-medium">{accountHolderName}</TableCell>
+              <TableCell className="font-medium">{aadhar}</TableCell>
               <TableCell className="font-medium">{bankAccount}</TableCell>
               <TableCell className="font-medium">{bankName}</TableCell>
               <TableCell className="font-medium">{branchName}</TableCell>

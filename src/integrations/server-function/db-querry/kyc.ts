@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { KycTable, UserTable } from "@/db/schema";
+import { KycTable } from "@/db/schema";
 import { KycFormSchema } from "@/ui/kyc-form";
 import { createServerFn } from "@tanstack/react-start";
 import { eq } from "drizzle-orm";
@@ -17,10 +17,6 @@ export const upsertKycDetails = createServerFn()
       pan,
     } = kycDetails;
 
-    const { id } = (
-      await db.select().from(UserTable).where(eq(UserTable.email, email))
-    )[0];
-
     await db
       .insert(KycTable)
       .values({
@@ -31,7 +27,7 @@ export const upsertKycDetails = createServerFn()
         branchName,
         ifsc,
         pan,
-        kycForUserId: id,
+        kycOfUserEmail: email,
       })
       .onDuplicateKeyUpdate({
         set: {
@@ -42,7 +38,7 @@ export const upsertKycDetails = createServerFn()
           branchName,
           ifsc,
           pan,
-          kycForUserId: id,
+          kycOfUserEmail: email,
         },
       });
   });
@@ -50,17 +46,11 @@ export const upsertKycDetails = createServerFn()
 export const getKycDetail = createServerFn()
   .inputValidator((d: { email: string }) => d)
   .handler(async ({ data: { email } }) => {
-    const userDetails = (
-      await db.select().from(UserTable).where(eq(UserTable.email, email))
-    )[0];
-
-    if (!userDetails) return null;
-
-    const { id } = userDetails;
-
     const kycDetails = (
-      await db.select().from(KycTable).where(eq(KycTable.kycForUserId, id))
+      await db.select().from(KycTable).where(eq(KycTable.kycOfUserEmail, email))
     )[0];
+
+    if (!kycDetails) return null;
 
     return kycDetails;
   });

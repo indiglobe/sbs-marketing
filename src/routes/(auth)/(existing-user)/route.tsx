@@ -4,6 +4,8 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/(auth)/(existing-user)")({
   component: RouteComponent,
 
+  search: {},
+
   beforeLoad: async ({ context }) => {
     const { userDetails } = context;
     if (!userDetails) {

@@ -51,7 +51,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className={cn(`flex max-w-svw flex-col`)}>
-        <ThemeProvider>{children}</ThemeProvider>
+        {children}
+        {/* <ThemeProvider></ThemeProvider> */}
         <DevTools />
         <Scripts />
       </body>

@@ -3,7 +3,8 @@ import { UserTable } from "@/db/schema";
 import { fetchSession } from "@/lib/auth/session";
 import { WelcomeFormSchema } from "@/ui/welcome-form";
 import { createServerFn } from "@tanstack/react-start";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
+import { getNextId } from "@/utils/id";
 
 export const getUserDetails = createServerFn()
   .inputValidator((data: { email: string }) => data)
@@ -20,7 +21,7 @@ export const getUserDetails = createServerFn()
 export const insertUserDetails = createServerFn()
   .inputValidator((data: WelcomeFormSchema) => data)
   .handler(async ({ data }) => {
-    const { city, email, name, phone } = data;
+    const { city, email, name, phone, referrer } = data;
     const session = await fetchSession();
 
     if (!session) throw new Error();
@@ -29,7 +30,31 @@ export const insertUserDetails = createServerFn()
       user: { image },
     } = session;
 
-    await db
-      .insert(UserTable)
-      .values({ name, email, phone, city, avatarUrl: image });
+    const lastUserId = await getLastUserId();
+
+    const nextId = getNextId(lastUserId ? lastUserId : undefined);
+
+    await db.insert(UserTable).values({
+      name,
+      email,
+      phone,
+      city,
+      avatarUrl: image,
+      id: nextId,
+      referredBy: referrer,
+    });
   });
+
+export const getLastUserId = createServerFn().handler(async () => {
+  const userDetails = (
+    await db
+      .select({ id: UserTable.id })
+      .from(UserTable)
+      .limit(1)
+      .orderBy(desc(UserTable.id))
+  )[0];
+
+  if (!userDetails) return null;
+
+  return userDetails.id;
+});

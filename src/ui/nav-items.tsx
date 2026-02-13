@@ -11,6 +11,7 @@ import {
   navigationMenuTriggerStyle,
 } from "./shadcn/navigation-menu";
 import { Link, useRouteContext } from "@tanstack/react-router";
+import { cn } from "@/utils/cn";
 
 export function NavigationItemsList() {
   const context: AppRouterContext = useRouteContext({ from: "/(auth)" });
@@ -26,7 +27,14 @@ export function NavigationItemsList() {
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link to="/dashboard">Home</Link>
+            <Link
+              className={cn(
+                `bg-transparent hover:bg-transparent focus:bg-transparent`,
+              )}
+              to="/dashboard"
+            >
+              Home
+            </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
@@ -36,14 +44,28 @@ export function NavigationItemsList() {
               asChild
               className={navigationMenuTriggerStyle()}
             >
-              <Link to="/manage">Manage</Link>
+              <Link
+                className={cn(
+                  `bg-transparent hover:bg-transparent focus:bg-transparent`,
+                )}
+                to="/manage"
+              >
+                Manage
+              </Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
         )}
 
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link to="/kyc">KYC</Link>
+            <Link
+              className={cn(
+                `bg-transparent hover:bg-transparent focus:bg-transparent`,
+              )}
+              to="/kyc"
+            >
+              KYC
+            </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 

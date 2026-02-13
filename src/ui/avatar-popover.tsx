@@ -23,7 +23,7 @@ export function AvatarPopover() {
         <Button
           variant="outline"
           className={cn(
-            `dark:bg-background dark:hover:bg-background border-none p-0`,
+            `border-0 bg-transparent p-0 shadow-none hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent`,
           )}
         >
           <UserAvatar />
