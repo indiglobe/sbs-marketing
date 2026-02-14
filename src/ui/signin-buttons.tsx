@@ -1,20 +1,14 @@
 import { authClient } from "@/lib/auth/auth-client";
 import { ComponentProps } from "react";
-import { SigninSearchParams } from "@/routes/(guest)/signin";
-import { getRouteApi } from "@tanstack/react-router";
 import { cn } from "@/utils/cn";
 
-const signinRoute = getRouteApi("/(guest)/signin/");
-
 export function GoogleSigninButton({ ...props }: ComponentProps<"button">) {
-  const signinSearch: SigninSearchParams = signinRoute.useSearch();
-
   return (
     <button
       onClick={async () => {
         await authClient.signIn.social({
           provider: "google",
-          callbackURL: signinSearch.callbackUrl,
+          // callbackURL: signinSearch.callbackUrl,
         });
       }}
       {...props}
