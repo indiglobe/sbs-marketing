@@ -87,8 +87,8 @@ importers:
         specifier: ^4.0.6
         version: 4.1.18
       tanstack-cli:
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.0.3
+        version: 0.0.3
       taskforge-cli:
         specifier: ^1.0.0
         version: 1.0.0(@types/node@22.19.11)(jsdom@27.4.0(@noble/hashes@2.0.1))(lightningcss@1.30.2)(tsx@4.21.0)(typescript@5.9.3)(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2))(yaml@2.8.2)
@@ -4517,8 +4517,8 @@ packages:
   tailwindcss@4.1.18:
     resolution: {integrity: sha512-4+Z+0yiYyEtUVCScyfHCxOYP06L5Ne+JiHhY2IjR2KWMIWhJOYZKLSGZaP5HkZ8+bY0cxfzwDE5uOmzFXyIwxw==}
 
-  tanstack-cli@0.0.2:
-    resolution: {integrity: sha512-dSD2OzEWMpknze9kThC9HTIpJh0zdBxfK7Pdsm21yonJwXeur8qsSzvsDi6B100OS7PQMhjyfuO4Jc8IdoAlKg==}
+  tanstack-cli@0.0.3:
+    resolution: {integrity: sha512-8IFD1Pfq0kgpDGGVu+fA67LovRP6lK3O00mWhD3ux8ZJFrxdc4tkRZVLK7vdqEjC4sQvkfVUENis6p9d8ls8tw==}
     hasBin: true
 
   tapable@2.3.0:
@@ -9251,7 +9251,7 @@ snapshots:
 
   tailwindcss@4.1.18: {}
 
-  tanstack-cli@0.0.2:
+  tanstack-cli@0.0.3:
     dependencies:
       dotenv: 17.3.1
       express: 5.2.1

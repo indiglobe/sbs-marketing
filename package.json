@@ -64,7 +64,7 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.6",
-    "tanstack-cli": "^0.0.2",
+    "tanstack-cli": "^0.0.3",
     "taskforge-cli": "^1.0.0",
     "tw-animate-css": "^1.3.6",
     "vite-tsconfig-paths": "^5.1.4",
