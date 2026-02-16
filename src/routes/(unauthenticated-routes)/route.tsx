@@ -20,7 +20,7 @@ function RouteComponent() {
   return (
     <>
       <nav className={cn(`flex w-full items-center justify-center`)}>
-        <div className={cn(`size-16`)}>
+        <div className={cn(`z-1 size-20 pt-10`)}>
           <Image src={sbsLogo} alt="sbs-logo" layout="fullWidth" />
         </div>
       </nav>

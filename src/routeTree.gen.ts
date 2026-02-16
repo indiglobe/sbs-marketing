@@ -14,6 +14,8 @@ import { Route as authenticatedRoutesRouteRouteImport } from './routes/(authenti
 import { Route as authenticatedRoutesIndexRouteImport } from './routes/(authenticated-routes)/index'
 import { Route as unauthenticatedRoutesSignupIndexRouteImport } from './routes/(unauthenticated-routes)/signup/index'
 import { Route as unauthenticatedRoutesLoginIndexRouteImport } from './routes/(unauthenticated-routes)/login/index'
+import { Route as authenticatedRoutesProfileIndexRouteImport } from './routes/(authenticated-routes)/profile/index'
+import { Route as authenticatedRoutesMyTeamIndexRouteImport } from './routes/(authenticated-routes)/my-team/index'
 import { Route as authenticatedRoutesManageIndexRouteImport } from './routes/(authenticated-routes)/manage/index'
 import { Route as authenticatedRoutesKycIndexRouteImport } from './routes/(authenticated-routes)/kyc/index'
 
@@ -45,6 +47,18 @@ const unauthenticatedRoutesLoginIndexRoute =
     path: '/login/',
     getParentRoute: () => unauthenticatedRoutesRouteRoute,
   } as any)
+const authenticatedRoutesProfileIndexRoute =
+  authenticatedRoutesProfileIndexRouteImport.update({
+    id: '/profile/',
+    path: '/profile/',
+    getParentRoute: () => authenticatedRoutesRouteRoute,
+  } as any)
+const authenticatedRoutesMyTeamIndexRoute =
+  authenticatedRoutesMyTeamIndexRouteImport.update({
+    id: '/my-team/',
+    path: '/my-team/',
+    getParentRoute: () => authenticatedRoutesRouteRoute,
+  } as any)
 const authenticatedRoutesManageIndexRoute =
   authenticatedRoutesManageIndexRouteImport.update({
     id: '/manage/',
@@ -62,6 +76,8 @@ export interface FileRoutesByFullPath {
   '/': typeof authenticatedRoutesIndexRoute
   '/kyc/': typeof authenticatedRoutesKycIndexRoute
   '/manage/': typeof authenticatedRoutesManageIndexRoute
+  '/my-team/': typeof authenticatedRoutesMyTeamIndexRoute
+  '/profile/': typeof authenticatedRoutesProfileIndexRoute
   '/login/': typeof unauthenticatedRoutesLoginIndexRoute
   '/signup/': typeof unauthenticatedRoutesSignupIndexRoute
 }
@@ -69,6 +85,8 @@ export interface FileRoutesByTo {
   '/': typeof authenticatedRoutesIndexRoute
   '/kyc': typeof authenticatedRoutesKycIndexRoute
   '/manage': typeof authenticatedRoutesManageIndexRoute
+  '/my-team': typeof authenticatedRoutesMyTeamIndexRoute
+  '/profile': typeof authenticatedRoutesProfileIndexRoute
   '/login': typeof unauthenticatedRoutesLoginIndexRoute
   '/signup': typeof unauthenticatedRoutesSignupIndexRoute
 }
@@ -79,14 +97,23 @@ export interface FileRoutesById {
   '/(authenticated-routes)/': typeof authenticatedRoutesIndexRoute
   '/(authenticated-routes)/kyc/': typeof authenticatedRoutesKycIndexRoute
   '/(authenticated-routes)/manage/': typeof authenticatedRoutesManageIndexRoute
+  '/(authenticated-routes)/my-team/': typeof authenticatedRoutesMyTeamIndexRoute
+  '/(authenticated-routes)/profile/': typeof authenticatedRoutesProfileIndexRoute
   '/(unauthenticated-routes)/login/': typeof unauthenticatedRoutesLoginIndexRoute
   '/(unauthenticated-routes)/signup/': typeof unauthenticatedRoutesSignupIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/kyc/' | '/manage/' | '/login/' | '/signup/'
+  fullPaths:
+    | '/'
+    | '/kyc/'
+    | '/manage/'
+    | '/my-team/'
+    | '/profile/'
+    | '/login/'
+    | '/signup/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/kyc' | '/manage' | '/login' | '/signup'
+  to: '/' | '/kyc' | '/manage' | '/my-team' | '/profile' | '/login' | '/signup'
   id:
     | '__root__'
     | '/(authenticated-routes)'
@@ -94,6 +121,8 @@ export interface FileRouteTypes {
     | '/(authenticated-routes)/'
     | '/(authenticated-routes)/kyc/'
     | '/(authenticated-routes)/manage/'
+    | '/(authenticated-routes)/my-team/'
+    | '/(authenticated-routes)/profile/'
     | '/(unauthenticated-routes)/login/'
     | '/(unauthenticated-routes)/signup/'
   fileRoutesById: FileRoutesById
@@ -140,6 +169,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof unauthenticatedRoutesLoginIndexRouteImport
       parentRoute: typeof unauthenticatedRoutesRouteRoute
     }
+    '/(authenticated-routes)/profile/': {
+      id: '/(authenticated-routes)/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof authenticatedRoutesProfileIndexRouteImport
+      parentRoute: typeof authenticatedRoutesRouteRoute
+    }
+    '/(authenticated-routes)/my-team/': {
+      id: '/(authenticated-routes)/my-team/'
+      path: '/my-team'
+      fullPath: '/my-team/'
+      preLoaderRoute: typeof authenticatedRoutesMyTeamIndexRouteImport
+      parentRoute: typeof authenticatedRoutesRouteRoute
+    }
     '/(authenticated-routes)/manage/': {
       id: '/(authenticated-routes)/manage/'
       path: '/manage'
@@ -161,6 +204,8 @@ interface authenticatedRoutesRouteRouteChildren {
   authenticatedRoutesIndexRoute: typeof authenticatedRoutesIndexRoute
   authenticatedRoutesKycIndexRoute: typeof authenticatedRoutesKycIndexRoute
   authenticatedRoutesManageIndexRoute: typeof authenticatedRoutesManageIndexRoute
+  authenticatedRoutesMyTeamIndexRoute: typeof authenticatedRoutesMyTeamIndexRoute
+  authenticatedRoutesProfileIndexRoute: typeof authenticatedRoutesProfileIndexRoute
 }
 
 const authenticatedRoutesRouteRouteChildren: authenticatedRoutesRouteRouteChildren =
@@ -168,6 +213,8 @@ const authenticatedRoutesRouteRouteChildren: authenticatedRoutesRouteRouteChildr
     authenticatedRoutesIndexRoute: authenticatedRoutesIndexRoute,
     authenticatedRoutesKycIndexRoute: authenticatedRoutesKycIndexRoute,
     authenticatedRoutesManageIndexRoute: authenticatedRoutesManageIndexRoute,
+    authenticatedRoutesMyTeamIndexRoute: authenticatedRoutesMyTeamIndexRoute,
+    authenticatedRoutesProfileIndexRoute: authenticatedRoutesProfileIndexRoute,
   }
 
 const authenticatedRoutesRouteRouteWithChildren =

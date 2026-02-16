@@ -46,9 +46,9 @@ export const getExistingUser = createServerFn()
 
     if (!user) return null;
 
-    const { id: userId, name, role } = user;
+    const { id: userId, name, role, city, phone } = user;
 
-    return { id: userId, name, role };
+    return { id: userId, name, role, city, phone };
   });
 
 export const isValidUser = createServerFn()

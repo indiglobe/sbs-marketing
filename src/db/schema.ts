@@ -50,6 +50,11 @@ export const KycTable = mysqlTable("kyc", {
     }),
 });
 
+export const EventsTable = mysqlTable("events", {
+  id: int("id").primaryKey().autoincrement(),
+  eventDate: datetime("event_date", { mode: "date" }).notNull(),
+});
+
 // export const UserTable = mysqlTable(
 //   "users",
 //   {
@@ -90,9 +95,4 @@ export const KycTable = mysqlTable("kyc", {
 //       onDelete: "cascade",
 //       onUpdate: "cascade",
 //     }),
-// });
-
-// export const EventsTable = mysqlTable("events", {
-//   id: int("id").primaryKey().autoincrement(),
-//   eventDate: datetime("event_date", { mode: "date" }).notNull(),
 // });

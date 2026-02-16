@@ -1,99 +1,157 @@
 import { cn } from "@/utils/cn";
-import { createFileRoute } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  redirect,
+  useLoaderData,
+} from "@tanstack/react-router";
 import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/ui/shadcn/table";
+import { fetchCookieDetails } from "@/integrations/server-function/cookie";
+import { getExistingUser } from "@/integrations/server-function/querry/users";
+import { allKycDetails } from "@/integrations/server-function/querry/kyc";
+import {
+  addNewEvent,
+  allEvents,
+  deleteEvent,
+} from "@/integrations/server-function/querry/events";
+import { Button } from "@/ui/shadcn/button";
+import { useLatestEvent } from "@/hooks/use-latest-event";
+import { Trash } from "lucide-react";
 
 export const Route = createFileRoute("/(authenticated-routes)/manage/")({
   component: RouteComponent,
+
+  beforeLoad: async () => {
+    const cookieDetails = await fetchCookieDetails({ data: "user" });
+
+    if (!cookieDetails) throw redirect({ to: "/" });
+
+    const userDetails = await getExistingUser({
+      data: { id: cookieDetails.id },
+    });
+
+    if (!userDetails) throw redirect({ to: "/" });
+
+    if (userDetails.role === "basic") {
+      throw redirect({ to: "/" });
+    }
+  },
+
+  loader: async () => {
+    const kycDetails = await allKycDetails();
+    const events = await allEvents();
+
+    return { kycDetails, events };
+  },
 });
 
 function RouteComponent() {
   return (
-    <main className={cn(`container m-auto`)}>
-      <TableDemo />
+    <main className={cn(`container m-auto space-y-4`)}>
+      <KYCList />
+      <EventsList />
     </main>
   );
 }
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
+function KYCList() {
+  const { kycDetails } = useLoaderData({
+    from: "/(authenticated-routes)/manage/",
+  });
 
-export function TableDemo() {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-25">Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {invoices.map((invoice) => (
-          <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+    <div>
+      <div className={cn(`pb-4 text-xl font-semibold`)}>KYC Details</div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-25">Aadhar</TableHead>
+            <TableHead>Account Holder Name</TableHead>
+            <TableHead>Bank Account</TableHead>
+            <TableHead className="text-right">Bank Name</TableHead>
+            <TableHead className="text-right">Branch Name</TableHead>
+            <TableHead className="text-right">IFSC</TableHead>
+            <TableHead className="text-right">PAN</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">$2,500.00</TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {kycDetails.map((kyc) => (
+            <TableRow key={kyc.id}>
+              <TableCell className="font-medium">{kyc.aadhar}</TableCell>
+              <TableCell>{kyc.accountHolderName}</TableCell>
+              <TableCell>{kyc.bankAccount}</TableCell>
+              <TableCell className="text-right">{kyc.bankName}</TableCell>
+              <TableCell className="text-right">{kyc.branchName}</TableCell>
+              <TableCell className="text-right">{kyc.ifsc}</TableCell>
+              <TableCell className="text-right">{kyc.pan}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+function EventsList() {
+  const { events } = useLoaderData({
+    from: "/(authenticated-routes)/manage/",
+  });
+  const loaderData = useLoaderData({ from: "/(authenticated-routes)" });
+  const { data } = useLatestEvent();
+
+  async function addNewEventToDB() {
+    if (!data) return;
+    const oneMonthLater = new Date(data.toISOString());
+
+    oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+    await addNewEvent({
+      data: { eventDate: new Date(oneMonthLater).toDateString() },
+    });
+  }
+
+  return (
+    <div>
+      <div className={cn(`flex justify-between`)}>
+        <div className={cn(`pb-4 text-xl font-semibold`)}>Events Details</div>
+        {loaderData?.role === "admin" && (
+          <Button type="button" onClick={addNewEventToDB}>
+            Add new Event
+          </Button>
+        )}
+      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-25">Sl no.</TableHead>
+            <TableHead>Event Date</TableHead>
+            <TableHead className={cn(`text-right`)}>Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {events.map((event, idx) => (
+            <TableRow key={event.id}>
+              <TableCell className="text-left">{idx + 1}</TableCell>
+              <TableCell className="font-medium">
+                {new Date(event.eventDate).toUTCString()}
+              </TableCell>
+              <TableCell className="text-right font-medium">
+                <Button
+                  variant={"destructive"}
+                  onClick={async () => deleteEvent({ data: { id: event.id } })}
+                >
+                  <Trash className={cn(`size-5`)} />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

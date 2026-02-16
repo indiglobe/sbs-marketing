@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { KycTable } from "@/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { fetchCookieDetails } from "../cookie";
+import { eq } from "drizzle-orm";
 
 export const upsertKycDetails = createServerFn()
   .inputValidator(
@@ -55,4 +56,22 @@ export const upsertKycDetails = createServerFn()
           pan,
         },
       });
+  });
+
+export const allKycDetails = createServerFn().handler(async () => {
+  const kycDetails = await db.select().from(KycTable);
+
+  return kycDetails;
+});
+
+export const kycDetails = createServerFn()
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ data: { id } }) => {
+    const kycDetails = (
+      await db.select().from(KycTable).where(eq(KycTable.kycOfUserId, id))
+    )[0];
+
+    if (!kycDetails) return null;
+
+    return kycDetails;
   });

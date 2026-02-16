@@ -95,17 +95,6 @@ export default function KycPage() {
               />
             </div>
 
-            {/* Bank Account */}
-            <div className="space-y-2">
-              <Label htmlFor="bankAccount">Bank Account Number</Label>
-              <Input
-                id="bankAccount"
-                name="bankAccount"
-                type="text"
-                placeholder="Enter your bank account number"
-              />
-            </div>
-
             {/* Bank Name */}
             <div className="space-y-2">
               <Label htmlFor="bankName">Bank Name</Label>
@@ -117,17 +106,6 @@ export default function KycPage() {
               />
             </div>
 
-            {/* Branch Name */}
-            <div className="space-y-2">
-              <Label htmlFor="branchName">Branch Name</Label>
-              <Input
-                id="branchName"
-                name="branchName"
-                type="text"
-                placeholder="Enter your bank branch name"
-              />
-            </div>
-
             {/* Account Holder Name */}
             <div className="space-y-2">
               <Label htmlFor="accountHolderName">Account Holder Name</Label>
@@ -136,6 +114,28 @@ export default function KycPage() {
                 name="accountHolderName"
                 type="text"
                 placeholder="Enter account holder name"
+              />
+            </div>
+
+            {/* Bank Account */}
+            <div className="space-y-2">
+              <Label htmlFor="bankAccount">Bank Account Number</Label>
+              <Input
+                id="bankAccount"
+                name="bankAccount"
+                type="text"
+                placeholder="Enter your bank account number"
+              />
+            </div>
+
+            {/* Branch Name */}
+            <div className="space-y-2">
+              <Label htmlFor="branchName">Branch Name</Label>
+              <Input
+                id="branchName"
+                name="branchName"
+                type="text"
+                placeholder="Enter your bank branch name"
               />
             </div>
 
