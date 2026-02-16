@@ -6,10 +6,10 @@ import {
 import { DevTools } from "../integrations/tanstack/devtools";
 import appCss from "../styles/styles.css?url";
 import type { QueryClient } from "@tanstack/react-query";
-import { ThemeProvider } from "@/integrations/theme/theme-provider";
 import { cn } from "@/utils/cn";
 import { RootNotFound } from "@/components/root-not-found";
 import { RootError } from "@/components/root-error";
+// import { ThemeProvider } from "@/integrations/theme/theme-provider";
 
 interface MyRouterContext {
   queryClient: QueryClient;

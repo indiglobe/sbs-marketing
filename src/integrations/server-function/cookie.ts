@@ -1,27 +1,24 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getCookie, setCookie } from "@tanstack/react-start/server";
 
-export const getCookieValue = createServerFn()
-  .inputValidator((data: string) => data)
-  .handler(async ({ data }) => {
-    const cookie = getCookie(data);
+export type UserDetails = {
+  id: string;
+};
 
-    return cookie;
+export const fetchCookieDetails = createServerFn()
+  .inputValidator((d: string) => d)
+  .handler(({ data: cookiename }) => {
+    const cookieValue = getCookie(cookiename);
+
+    if (!cookieValue) {
+      return null;
+    }
+
+    return JSON.parse(cookieValue) as UserDetails;
   });
 
-export type SetCookieParams = Parameters<typeof setCookie>;
-type SetCookieParamsName = SetCookieParams[0];
-type SetCookieParamsValue = SetCookieParams[1];
-// type SetCookieParamsOptions = SetCookieParams[2];
-
-export const setCookieValue = createServerFn()
-  .inputValidator(
-    (data: {
-      cookieName: SetCookieParamsName;
-      cookieValue: SetCookieParamsValue;
-      // options: SetCookieParamsOptions;
-    }) => data,
-  )
-  .handler(async ({ data: { cookieName, cookieValue } }) => {
-    setCookie(cookieName, cookieValue);
+export const setCookieDetails = createServerFn()
+  .inputValidator((d: { cokieName: string; cookieValue: string }) => d)
+  .handler(({ data: { cokieName, cookieValue } }) => {
+    setCookie(cokieName, cookieValue);
   });
