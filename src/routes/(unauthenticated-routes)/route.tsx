@@ -1,5 +1,8 @@
 import { fetchCookieDetails } from "@/integrations/server-function/cookie";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { Image } from "@unpic/react";
+import sbsLogo from "@/assets/sbs.png";
+import { cn } from "@/utils/cn";
 
 export const Route = createFileRoute("/(unauthenticated-routes)")({
   component: RouteComponent,
@@ -16,7 +19,14 @@ export const Route = createFileRoute("/(unauthenticated-routes)")({
 function RouteComponent() {
   return (
     <>
-      <Outlet />
+      <nav className={cn(`flex w-full items-center justify-center`)}>
+        <div className={cn(`size-16`)}>
+          <Image src={sbsLogo} alt="sbs-logo" layout="fullWidth" />
+        </div>
+      </nav>
+      <div className={cn(`px-4 pb-20`)}>
+        <Outlet />
+      </div>
     </>
   );
 }

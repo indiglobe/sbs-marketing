@@ -12,6 +12,7 @@ import {
 } from "@/ui/shadcn/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/shadcn/popover";
 import { Sheet, SheetContent, SheetTrigger } from "@/ui/shadcn/sheet";
+import { cn } from "@/utils/cn";
 import {
   createFileRoute,
   Link,
@@ -20,8 +21,10 @@ import {
   useLoaderData,
   useNavigate,
 } from "@tanstack/react-router";
+import { Image } from "@unpic/react";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import sbsMarketing from "@/assets/sbs.png";
 
 export const Route = createFileRoute("/(authenticated-routes)")({
   component: RouteComponent,
@@ -51,7 +54,9 @@ function RouteComponent() {
   return (
     <>
       <Navbar />
-      <Outlet />
+      <main className={cn(`px-4 pt-20`)}>
+        <Outlet />
+      </main>
     </>
   );
 }
@@ -98,7 +103,7 @@ export default function Navbar() {
             <DialogTitle>Refer a Friend</DialogTitle>
           </DialogHeader>
           <p className="text-muted-foreground text-sm">
-            Invite your friends and earn rewards.
+            Invite your friends and earn badges.
           </p>
         </DialogContent>
       </Dialog>
@@ -124,8 +129,8 @@ export default function Navbar() {
     <header className="bg-background border-b">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link to="/" className="text-lg font-bold">
-          MyLogo
+        <Link to="/" className="size-12 text-lg font-bold">
+          <Image src={sbsMarketing} alt="sbs-logo" layout="fullWidth" />
         </Link>
 
         {/* Desktop Nav */}
