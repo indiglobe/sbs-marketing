@@ -4,7 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/ui/shadcn/card";
 import { Input } from "@/ui/shadcn/input";
 import { Label } from "@/ui/shadcn/label";
 import { Button } from "@/ui/shadcn/button";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  useNavigate,
+  useSearch,
+} from "@tanstack/react-router";
 import { SubmitEvent } from "react";
 import { creteNewUser } from "@/integrations/server-function/querry/users";
 import { cn } from "@/utils/cn";
@@ -18,6 +23,9 @@ export const Route = createFileRoute("/(unauthenticated-routes)/signup/")({
 });
 
 export default function RouteComponent() {
+  const search: { referrer_id: string; referrer_name: string } = useSearch({
+    from: "/(unauthenticated-routes)",
+  });
   const navigate = useNavigate();
   async function onSubmit(e: SubmitEvent) {
     e.preventDefault();
@@ -33,7 +41,7 @@ export default function RouteComponent() {
         referredBy:
           (data.referredBy as string) === ""
             ? null
-            : (data.referredBy as string),
+            : (search.referrer_id as string),
       },
     });
 
@@ -113,14 +121,27 @@ export default function RouteComponent() {
               />
             </div>
 
-            {/* Password */}
+            {/* referrer */}
             <div className="space-y-2">
-              <Label htmlFor="referrer">Referrer</Label>
+              <Label htmlFor="">Referred By</Label>
+              <Input
+                type="text"
+                placeholder="Referrer name"
+                disabled
+                defaultValue={search.referrer_name}
+              />
+            </div>
+
+            {/* referrer */}
+            <div className="space-y-2">
+              <Label htmlFor="referrer">Referrer code</Label>
               <Input
                 id="referrer"
                 name="referrer"
-                type="password"
+                type="text"
+                disabled
                 placeholder="Referrer id"
+                defaultValue={search.referrer_id}
               />
             </div>
 

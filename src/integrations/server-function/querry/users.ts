@@ -62,10 +62,21 @@ export const isValidUser = createServerFn()
 
     if (!user) return null;
 
-    const { id: userId, name, role, password } = user;
-    if (password === data.password) {
+    const { id: userId, name, role, password, isActive } = user;
+    if (password === data.password || isActive) {
       return { id: userId, name, role };
     }
 
     return null;
+  });
+
+export const toggleUserActivation = createServerFn()
+  .inputValidator((d: { userid: string; newActivationStatus: boolean }) => d)
+  .handler(async ({ data }) => {
+    const { userid, newActivationStatus } = data;
+
+    await db
+      .update(UserTable)
+      .set({ isActive: newActivationStatus })
+      .where(eq(UserTable.id, userid));
   });

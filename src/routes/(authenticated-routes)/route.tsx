@@ -22,10 +22,11 @@ import {
   useNavigate,
 } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
-import { Menu } from "lucide-react";
+import { Copy, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import sbsMarketing from "@/assets/sbs.png";
 import { useLatestEvent } from "@/hooks/use-latest-event";
+import { env } from "@/lib/env";
 
 export const Route = createFileRoute("/(authenticated-routes)")({
   component: RouteComponent,
@@ -52,25 +53,42 @@ export const Route = createFileRoute("/(authenticated-routes)")({
 });
 
 function RouteComponent() {
+  const loaderData = useLoaderData({ from: "/(authenticated-routes)" });
+  const referrerUrl = `${env.VITE_APP_HOST}/signup?referrer_id=${loaderData?.id}&referrer_name=${loaderData?.name}`;
+
+  function copyTextToClipboard() {
+    navigator.clipboard
+      .writeText(referrerUrl)
+      .then(() => {
+        console.log("Text successfully copied to clipboard");
+      })
+      .catch((err) => {
+        console.error("Could not copy text: ", err);
+      });
+  }
+
   return (
     <>
-      <Navbar />
+      <Navbar copyTextToClipboard={copyTextToClipboard} />
       <main className={cn(`mb-22 px-4 pt-10 pb-24`)}>
         <Outlet />
       </main>
-      <Footer />
+      <Footer copyTextToClipboard={copyTextToClipboard} />
     </>
   );
 }
 
-export function Navbar() {
+export function Navbar({
+  copyTextToClipboard,
+}: {
+  copyTextToClipboard: () => void;
+}) {
   const [isReferOpen, setIsReferOpen] = useState(false);
   const [isHelplineOpen, setIsHelplineOpen] = useState(false);
   const loaderData = useLoaderData({ from: "/(authenticated-routes)" });
   const navigate = useNavigate();
 
   if (!loaderData) return null;
-
   const { role } = loaderData;
 
   async function handleSignOut() {
@@ -119,9 +137,21 @@ export function Navbar() {
           <DialogHeader>
             <DialogTitle>Refer a Friend</DialogTitle>
           </DialogHeader>
-          <p className="text-muted-foreground text-sm">
-            Invite your friends and earn badges.
-          </p>
+          <div>
+            <p className="text-muted-foreground text-sm">
+              Invite your friends and earn badges.
+            </p>
+            <div
+              className={cn(
+                `mt-4 flex w-full justify-between rounded-md border border-green-500 bg-green-100 px-3 py-1 text-green-500`,
+              )}
+            >
+              <div>{loaderData.id}</div>
+              <button onClick={copyTextToClipboard}>
+                <Copy className={cn(`size-4`)} />
+              </button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -257,9 +287,14 @@ export function Navbar() {
   );
 }
 
-export function Footer() {
+export function Footer({
+  copyTextToClipboard,
+}: {
+  copyTextToClipboard: () => void;
+}) {
   const [isReferOpen, setIsReferOpen] = useState(false);
   const { data } = useLatestEvent();
+  const loaderData = useLoaderData({ from: "/(authenticated-routes)" });
 
   return (
     <footer className={cn(`fixed bottom-0 w-full bg-[#33436b]`)}>
@@ -270,17 +305,29 @@ export function Footer() {
       >
         <Dialog open={isReferOpen} onOpenChange={setIsReferOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm">
-              Refer
+            <Button variant="outline" size="sm" onClick={copyTextToClipboard}>
+              Refer Now
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Refer a Friend</DialogTitle>
             </DialogHeader>
-            <p className="text-muted-foreground text-sm">
-              Invite your friends and earn badges.
-            </p>
+            <div>
+              <p className="text-muted-foreground text-sm">
+                Invite your friends and earn badges.
+              </p>
+              <div
+                className={cn(
+                  `mt-4 flex w-full justify-between rounded-md border border-green-500 bg-green-100 px-3 py-1 text-green-500`,
+                )}
+              >
+                <div>{loaderData?.id}</div>
+                <button onClick={copyTextToClipboard}>
+                  <Copy className={cn(`size-4`)} />
+                </button>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
 

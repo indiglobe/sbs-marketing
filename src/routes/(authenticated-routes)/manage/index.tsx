@@ -13,7 +13,10 @@ import {
   TableRow,
 } from "@/ui/shadcn/table";
 import { fetchCookieDetails } from "@/integrations/server-function/cookie";
-import { getExistingUser } from "@/integrations/server-function/querry/users";
+import {
+  getExistingUser,
+  toggleUserActivation,
+} from "@/integrations/server-function/querry/users";
 import { allKycDetails } from "@/integrations/server-function/querry/kyc";
 import {
   addNewEvent,
@@ -78,6 +81,7 @@ function KYCList() {
             <TableHead className="text-right">Branch Name</TableHead>
             <TableHead className="text-right">IFSC</TableHead>
             <TableHead className="text-right">PAN</TableHead>
+            <TableHead className="text-center">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -90,6 +94,22 @@ function KYCList() {
               <TableCell className="text-right">{kyc.branchName}</TableCell>
               <TableCell className="text-right">{kyc.ifsc}</TableCell>
               <TableCell className="text-right">{kyc.pan}</TableCell>
+              <TableCell className="text-center">
+                <Button
+                  onClick={() => {
+                    toggleUserActivation({
+                      data: {
+                        newActivationStatus: !kyc.status,
+                        userid: kyc.kycOfUserId,
+                      },
+                    });
+
+                    window.location.reload();
+                  }}
+                >
+                  {kyc.status ? "Active" : "Inactive"}
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
