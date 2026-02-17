@@ -7,6 +7,7 @@ import {
   datetime,
   boolean,
   char,
+  primaryKey,
 } from "drizzle-orm/mysql-core";
 
 export const role = mysqlEnum(["admin", "basic"]);
@@ -59,8 +60,13 @@ export const EventsTable = mysqlTable("events", {
 
 export const TeamTable = mysqlTable("teams", {
   id: int("id").primaryKey().autoincrement(),
-  connectedUsers: char("connected_users", { length: 8 }).references(
-    () => UserTable.id,
-    { onUpdate: "cascade", onDelete: "cascade" },
-  ),
 });
+
+export const UsersInTeamsTable = mysqlTable(
+  "users_in_teams",
+  {
+    teamId: int("team_id").notNull(),
+    userId: char("user_id", { length: 8 }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.teamId] })],
+);

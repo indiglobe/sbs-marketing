@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { UserTable } from "@/db/schema";
 import { getNextId } from "@/utils/id";
 import { createServerFn } from "@tanstack/react-start";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 
 export const creteNewUser = createServerFn()
   .inputValidator(
@@ -89,4 +89,16 @@ export const changePassword = createServerFn()
       .update(UserTable)
       .set({ password })
       .where(eq(UserTable.id, userid));
+  });
+
+export const getDirectJoinerCount = createServerFn()
+  .inputValidator((d: { userId: string }) => d)
+  .handler(async ({ data }) => {
+    const { userId } = data;
+    const users = await db
+      .select()
+      .from(UserTable)
+      .where(eq(UserTable.referredBy, userId));
+
+    return users.length;
   });

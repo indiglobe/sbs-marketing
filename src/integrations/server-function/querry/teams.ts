@@ -1,9 +1,14 @@
 import { db } from "@/db";
 import { TeamTable } from "@/db/schema";
 import { createServerFn } from "@tanstack/react-start";
+import { desc } from "drizzle-orm";
 
-createServerFn()
-  .inputValidator((d: { id: string }) => d)
-  .handler(async ({ data: { id } }) => {
-    db.select().from(TeamTable);
-  });
+export const createNewTeam = createServerFn().handler(async () => {
+  await db.insert(TeamTable).values({});
+
+  const { id } = (
+    await db.select().from(TeamTable).orderBy(desc(TeamTable.id))
+  )[0];
+
+  return { id };
+});

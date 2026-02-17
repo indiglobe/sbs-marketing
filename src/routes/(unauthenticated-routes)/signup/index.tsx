@@ -17,6 +17,12 @@ import {
   setCookieDetails,
   UserDetails,
 } from "@/integrations/server-function/cookie";
+import { createNewTeam } from "@/integrations/server-function/querry/teams";
+import {
+  addMemberIntoAllTeams,
+  addMemberIntoTeam,
+  getAllTeamsForUserWithId,
+} from "@/integrations/server-function/querry/user-in-team";
 
 export const Route = createFileRoute("/(unauthenticated-routes)/signup/")({
   component: RouteComponent,
@@ -42,6 +48,21 @@ export default function RouteComponent() {
           (data.referredBy as string) === ""
             ? null
             : (search.referrer_id as string),
+      },
+    });
+
+    const { id: newTeamId } = await createNewTeam();
+
+    const allTeamsJoinedByReferrer = await getAllTeamsForUserWithId({
+      data: { userid: search.referrer_id },
+    });
+
+    await addMemberIntoTeam({ data: { memberId: id, teamId: newTeamId } });
+
+    await addMemberIntoAllTeams({
+      data: {
+        teamsId: allTeamsJoinedByReferrer.map((t) => t.teamId),
+        userId: id,
       },
     });
 
