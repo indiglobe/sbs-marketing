@@ -80,3 +80,13 @@ export const toggleUserActivation = createServerFn()
       .set({ isActive: newActivationStatus })
       .where(eq(UserTable.id, userid));
   });
+
+export const changePassword = createServerFn()
+  .inputValidator((d: { userid: string; password: string }) => d)
+  .handler(async ({ data }) => {
+    const { password, userid } = data;
+    await db
+      .update(UserTable)
+      .set({ password })
+      .where(eq(UserTable.id, userid));
+  });

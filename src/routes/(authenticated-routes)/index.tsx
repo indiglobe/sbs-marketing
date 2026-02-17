@@ -1,4 +1,3 @@
-import ReferralTree from "@/ui/tree";
 import { cn } from "@/utils/cn";
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import { ComponentProps } from "react";
@@ -11,7 +10,6 @@ function RouteComponent() {
   return (
     <div className={cn(`container m-auto`)}>
       <Welcome />
-      <ReferralTree />
     </div>
   );
 }

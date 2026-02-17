@@ -117,7 +117,7 @@ export function Navbar({
         to="/my-team"
         className="text-sm font-medium text-white hover:text-white/50"
       >
-        My Team
+        My Tree
       </Link>
       <Link
         to="/kyc"

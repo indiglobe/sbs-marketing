@@ -66,7 +66,15 @@ export default function RouteComponent() {
 
             {/* Password */}
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <div className={cn(`flex items-center justify-between`)}>
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  className={cn(`text-sm text-blue-500`)}
+                  to="/forgot-password"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <Input
                 id="password"
                 name="password"
@@ -80,12 +88,14 @@ export default function RouteComponent() {
             </Button>
           </form>
 
-          <p className={cn(`mt-4`)}>
-            New user?{" "}
-            <Link to="/signup" className={cn("text-blue-500")}>
-              Sign up
-            </Link>
-          </p>
+          <div>
+            <p className={cn(`mt-4`)}>
+              New user?{" "}
+              <Link to="/signup" className={cn("text-blue-500")}>
+                Sign up
+              </Link>
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
