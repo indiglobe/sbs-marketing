@@ -14,6 +14,7 @@ import {
 } from "@/ui/shadcn/table";
 import { fetchCookieDetails } from "@/integrations/server-function/cookie";
 import {
+  getAllUsers,
   getExistingUser,
   toggleUserActivation,
 } from "@/integrations/server-function/querry/users";
@@ -26,6 +27,7 @@ import {
 import { Button } from "@/ui/shadcn/button";
 import { useLatestEvent } from "@/hooks/use-latest-event";
 import { Trash } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/(authenticated-routes)/manage/")({
   component: RouteComponent,
@@ -49,14 +51,16 @@ export const Route = createFileRoute("/(authenticated-routes)/manage/")({
   loader: async () => {
     const kycDetails = await allKycDetails();
     const events = await allEvents();
+    const allUsers = await getAllUsers();
 
-    return { kycDetails, events };
+    return { kycDetails, events, allUsers };
   },
 });
 
 function RouteComponent() {
   return (
     <main className={cn(`container m-auto space-y-4`)}>
+      <UsersList />
       <KYCList />
       <EventsList />
     </main>
@@ -94,20 +98,51 @@ function KYCList() {
               <TableCell className="text-right">{kyc.branchName}</TableCell>
               <TableCell className="text-right">{kyc.ifsc}</TableCell>
               <TableCell className="text-right">{kyc.pan}</TableCell>
-              <TableCell className="text-center">
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+function UsersList() {
+  const { allUsers } = useLoaderData({
+    from: "/(authenticated-routes)/manage/",
+  });
+
+  return (
+    <div>
+      <div className={cn(`pb-4 text-xl font-semibold`)}>User Details</div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-left">User ID</TableHead>
+            <TableHead className="text-left">Name</TableHead>
+            <TableHead className="text-left">Phone</TableHead>
+            <TableHead className="text-left">City</TableHead>
+            <TableHead className="text-center">Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {allUsers.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell className="font-medium">{user.id}</TableCell>
+              <TableCell className="font-medium">{user.name}</TableCell>
+              <TableCell className="font-medium">{user.phone}</TableCell>
+              <TableCell className="font-medium">{user.city}</TableCell>
+              <TableCell className="text-center font-medium">
                 <Button
-                  onClick={() => {
+                  onClick={() =>
                     toggleUserActivation({
                       data: {
-                        newActivationStatus: !kyc.status,
-                        userid: kyc.kycOfUserId,
+                        newActivationStatus: !user.isActive,
+                        userid: user.id,
                       },
-                    });
-
-                    window.location.reload();
-                  }}
+                    })
+                  }
                 >
-                  {kyc.status ? "Active" : "Inactive"}
+                  {user.isActive ? "Active" : "Inactive"}
                 </Button>
               </TableCell>
             </TableRow>
@@ -124,6 +159,8 @@ function EventsList() {
   });
   const loaderData = useLoaderData({ from: "/(authenticated-routes)" });
   const { data } = useLatestEvent();
+  const [shouldDisableAddEventButton, setShouldDisableAddEventButton] =
+    useState(false);
 
   async function addNewEventToDB() {
     if (!data) return;
@@ -133,6 +170,11 @@ function EventsList() {
     await addNewEvent({
       data: { eventDate: new Date(oneMonthLater).toDateString() },
     });
+    setShouldDisableAddEventButton(true);
+
+    await new Promise((res) => setTimeout(res, 15 * 1000));
+
+    setShouldDisableAddEventButton(false);
   }
 
   return (
@@ -140,7 +182,11 @@ function EventsList() {
       <div className={cn(`flex justify-between`)}>
         <div className={cn(`pb-4 text-xl font-semibold`)}>Events Details</div>
         {loaderData?.role === "admin" && (
-          <Button type="button" onClick={addNewEventToDB}>
+          <Button
+            type="button"
+            disabled={shouldDisableAddEventButton}
+            onClick={addNewEventToDB}
+          >
             Add new Event
           </Button>
         )}

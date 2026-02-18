@@ -1,8 +1,8 @@
 import { db } from "@/db";
-import { KycTable, UserTable } from "@/db/schema";
+import { KycTable } from "@/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { fetchCookieDetails } from "../cookie";
-import { eq, getTableColumns } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export const upsertKycDetails = createServerFn()
   .inputValidator(
@@ -59,12 +59,7 @@ export const upsertKycDetails = createServerFn()
   });
 
 export const allKycDetails = createServerFn().handler(async () => {
-  const KycTableRows = getTableColumns(KycTable);
-  const UserTableRows = getTableColumns(UserTable);
-  const kycDetails = await db
-    .select({ ...KycTableRows, status: UserTableRows.isActive })
-    .from(KycTable)
-    .leftJoin(UserTable, eq(KycTable.kycOfUserId, UserTable.id));
+  const kycDetails = await db.select().from(KycTable);
 
   return kycDetails;
 });

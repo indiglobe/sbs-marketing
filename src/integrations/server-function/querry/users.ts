@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { UserTable } from "@/db/schema";
 import { getNextId } from "@/utils/id";
 import { createServerFn } from "@tanstack/react-start";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export const creteNewUser = createServerFn()
   .inputValidator(
@@ -102,3 +102,9 @@ export const getDirectJoinerCount = createServerFn()
 
     return users.length;
   });
+
+export const getAllUsers = createServerFn().handler(async () => {
+  const users = await db.select().from(UserTable);
+
+  return users;
+});

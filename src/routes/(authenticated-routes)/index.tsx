@@ -57,7 +57,7 @@ function Welcome({ ...props }: ComponentProps<"div">) {
         <UserBadge userId={loaderData.id} />
       </div>
 
-      <div className={cn(`mt-6`)}>
+      <div className={cn(`mt-6 flex items-center justify-center`)}>
         <div className="w-full max-w-sm rounded-2xl border bg-white p-6 shadow-md">
           <h2 className="mb-4 text-lg font-semibold text-gray-800">
             User Network Stats

@@ -22,7 +22,7 @@ export const UserTable = mysqlTable(
     phone: varchar("phone", { length: 255 }).notNull(),
     role: role.notNull().default("basic"),
     referredBy: char("referred_by", { length: 8 }),
-    isActive: boolean().default(true),
+    isActive: boolean().default(false),
   },
   (table) => [
     foreignKey({

@@ -4,36 +4,39 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/ui/shadcn/card";
 import { Input } from "@/ui/shadcn/input";
 import { Label } from "@/ui/shadcn/label";
 import { Button } from "@/ui/shadcn/button";
-import {
-  createFileRoute,
-  Link,
-  useNavigate,
-  useSearch,
-} from "@tanstack/react-router";
-import { SubmitEvent } from "react";
+import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { SubmitEvent, useState } from "react";
 import { creteNewUser } from "@/integrations/server-function/querry/users";
 import { cn } from "@/utils/cn";
-import {
-  setCookieDetails,
-  UserDetails,
-} from "@/integrations/server-function/cookie";
 import { createNewTeam } from "@/integrations/server-function/querry/teams";
 import {
   addMemberIntoAllTeams,
   addMemberIntoTeam,
   getAllTeamsForUserWithId,
 } from "@/integrations/server-function/querry/user-in-team";
+import { LoaderCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/ui/shadcn/dialog";
 
 export const Route = createFileRoute("/(unauthenticated-routes)/signup/")({
   component: RouteComponent,
 });
 
 export default function RouteComponent() {
+  const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(false);
   const search: { referrer_id: string; referrer_name: string } = useSearch({
     from: "/(unauthenticated-routes)",
   });
-  const navigate = useNavigate();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [userDetails, setUserDetails] = useState({ userId: "", userName: "" });
+
   async function onSubmit(e: SubmitEvent) {
+    setIsSubmitButtonDisabled(true);
     e.preventDefault();
 
     const data = Object.fromEntries(new FormData(e.target));
@@ -66,16 +69,13 @@ export default function RouteComponent() {
       },
     });
 
-    await setCookieDetails({
-      data: {
-        cokieName: "user",
-        cookieValue: JSON.stringify({
-          id: id,
-        } satisfies UserDetails),
-      },
-    });
-
-    navigate({ to: "/" });
+    setIsSubmitButtonDisabled(false);
+    setIsDialogOpen(true);
+    setUserDetails((prev) => ({
+      ...prev,
+      userId: id,
+      userName: data.name as string,
+    }));
   }
 
   return (
@@ -166,8 +166,18 @@ export default function RouteComponent() {
               />
             </div>
 
-            <Button type="submit" className="w-full">
-              Sign Up
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitButtonDisabled}
+            >
+              {isSubmitButtonDisabled ? (
+                <span className={cn(`inline-block animate-spin`)}>
+                  <LoaderCircle />
+                </span>
+              ) : (
+                <span>Sign Up</span>
+              )}
             </Button>
           </form>
 
@@ -179,6 +189,26 @@ export default function RouteComponent() {
           </p>
         </CardContent>
       </Card>
+
+      <Dialog open={isDialogOpen}>
+        <DialogContent
+          onEscapeKeyDown={() => null}
+          onPointerDownOutside={() => null}
+          onInteractOutside={() => null}
+        >
+          <DialogHeader>
+            <DialogTitle>Welcome {userDetails.userName}.</DialogTitle>
+            <DialogDescription>
+              Your user id is{" "}
+              <span className={cn(`font-bold`)}>{userDetails.userId}.</span>
+              <br />
+              <br />
+              Please take a screenshot of this page and send it to your referrer
+              for approval.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
