@@ -63,11 +63,11 @@ export const isValidUser = createServerFn()
     if (!user) return null;
 
     const { id: userId, name, role, password, isActive } = user;
-    if (password === data.password || isActive) {
+    if (password === data.password && isActive) {
       return { id: userId, name, role };
     }
 
-    return null;
+    return { status: "not-approved" };
   });
 
 export const toggleUserActivation = createServerFn()

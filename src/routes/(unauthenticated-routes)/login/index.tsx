@@ -3,13 +3,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/ui/shadcn/card";
 import { Input } from "@/ui/shadcn/input";
 import { Label } from "@/ui/shadcn/label";
 import { Button } from "@/ui/shadcn/button";
-import { SubmitEvent } from "react";
+import { SubmitEvent, useState } from "react";
 import { isValidUser } from "@/integrations/server-function/querry/users";
 import { cn } from "@/utils/cn";
 import {
   setCookieDetails,
   UserDetails,
 } from "@/integrations/server-function/cookie";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/ui/shadcn/dialog";
 
 export const Route = createFileRoute("/(unauthenticated-routes)/login/")({
   component: RouteComponent,
@@ -17,6 +24,7 @@ export const Route = createFileRoute("/(unauthenticated-routes)/login/")({
 
 export default function RouteComponent() {
   const navigate = useNavigate();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   async function onSubmit(e: SubmitEvent) {
     e.preventDefault();
@@ -31,6 +39,11 @@ export default function RouteComponent() {
     });
 
     if (!userDetails) return;
+
+    if (userDetails.status === "not-approved") {
+      setIsDialogOpen(true);
+      return;
+    }
 
     await setCookieDetails({
       data: {
@@ -98,6 +111,21 @@ export default function RouteComponent() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={isDialogOpen}>
+        <DialogContent
+          onEscapeKeyDown={() => null}
+          onPointerDownOutside={() => null}
+          onInteractOutside={() => null}
+        >
+          <DialogHeader>
+            <DialogTitle>Uh-uh.</DialogTitle>
+            <DialogDescription>
+              You haven't been approved till now.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
