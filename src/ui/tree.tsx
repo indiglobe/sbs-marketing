@@ -3,6 +3,7 @@ import "@xyflow/react/dist/style.css";
 import { buildReactFlowFromUsers } from "@/utils/build-react-flow-data";
 import { cn } from "@/utils/cn";
 import { useUsersDataForTree } from "@/hooks/use-tree-data";
+import { useLoaderData } from "@tanstack/react-router";
 
 // sample data
 
@@ -23,7 +24,13 @@ import { useUsersDataForTree } from "@/hooks/use-tree-data";
 // ];
 
 export default function ReferralTree() {
-  const { data } = useUsersDataForTree();
+  const loaderData = useLoaderData({
+    from: "/(authenticated-routes)/my-team/",
+  });
+
+  if (!loaderData) return null;
+
+  const { data } = useUsersDataForTree(loaderData.id);
 
   if (!data) {
     return null;

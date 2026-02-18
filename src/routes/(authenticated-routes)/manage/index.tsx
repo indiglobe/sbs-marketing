@@ -133,14 +133,17 @@ function UsersList() {
               <TableCell className="font-medium">{user.city}</TableCell>
               <TableCell className="text-center font-medium">
                 <Button
-                  onClick={() =>
+                  disabled={user.role === "admin"}
+                  onClick={() => {
                     toggleUserActivation({
                       data: {
                         newActivationStatus: !user.isActive,
                         userid: user.id,
                       },
-                    })
-                  }
+                    });
+
+                    window.location.reload();
+                  }}
                 >
                   {user.isActive ? "Active" : "Inactive"}
                 </Button>

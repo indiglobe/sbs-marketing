@@ -25,6 +25,7 @@ export default function UserBadge({ userId }: { userId: string }) {
       <h2 className="mb-2 text-xl font-bold">🏆 {data.rank}</h2>
       <div className="text-sm opacity-90">
         <p>Direct Referrals: {data.direct}</p>
+        <p>Joined by referal: {data.team - data.direct}</p>
         <p>Total Team: {data.team}</p>
       </div>
     </div>

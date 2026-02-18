@@ -72,6 +72,16 @@ function Welcome({ ...props }: ComponentProps<"div">) {
             </div>
 
             <div className="flex items-center justify-between rounded-lg bg-gray-100 p-3">
+              <span className="font-medium text-gray-600">
+                Joined by referal
+              </span>
+              <span className="text-lg font-bold text-purple-600">
+                {pageLoaderData.userbadgeDetails.team -
+                  pageLoaderData.userbadgeDetails.direct}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg bg-gray-100 p-3">
               <span className="font-medium text-gray-600">Team Member</span>
               <span className="text-lg font-bold text-purple-600">
                 {pageLoaderData.userbadgeDetails.team}
