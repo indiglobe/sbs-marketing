@@ -3,6 +3,13 @@ import mysql from "mysql2/promise";
 import * as schema from "./schema.ts";
 import { env } from "@/lib/env/index.ts";
 
-const connection = await mysql.createConnection(env.DATABASE_URL);
+const pool = mysql.createPool({
+  uri: env.DATABASE_URL,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
+});
 
-export const db = drizzle(connection, { schema, mode: "default" });
+export const db = drizzle(pool, { schema, mode: "default" });
